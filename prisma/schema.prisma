@@ -7,13 +7,139 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id        Int   @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          Int       @id @default(autoincrement())
+  email		  String    @unique
+  name        String
+  password	  String
+  role  Role  @default(STUDENT)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  approvedRequest ApproveInstructorRequest?
+
+  courses Course[]
+  enrollments Enrollment[]
 
   @@map("users")
+  
+}
+
+model ApproveInstructorRequest {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @unique
+  user 		    User      @relation(fields: [userId], references: [id])
+  status      RequestStatus    @default(PENDING)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("approve_request")
+}
+
+model Enrollment {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user 		  User      @relation(fields: [userId], references: [id])
+  courseId Int
+  course   Course  @relation(fields: [courseId], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("enrollments")
+}
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  price       Float     @default(0)
+  difficulty Difficulty
+  instructorId Int
+  instructor   User   @relation(fields: [instructorId], references: [id])
+  modules     Module[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  hasInstruments HasInstruments[]
+  hasMusicGender HasMusicGender[]
+  enrollment Enrollment[]
+
+  @@map("courses")
+}
+
+model Module {
+  id       Int      @id @default(autoincrement())
+  name     String
+  courseId Int
+  course   Course  @relation(fields: [courseId], references: [id])
+  lessons  Lesson[]
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("modules")
+}
+
+model Lesson {
+  id       Int      @id @default(autoincrement())
+  title    String
+  content  String?
+  moduleId Int
+  module   Module  @relation(fields: [moduleId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("lessons")
+}
+
+model Instrument {
+  id           Int     @id @default(autoincrement())
+  description  String
+
+  hasIntruments HasInstruments[]
+  
+  @@map("instruments")  
+}
+
+model MusicGender {
+  id           Int     @id @default(autoincrement())
+  description  String
+  
+  hasMusicGender HasMusicGender[]
+
+  @@map("music_gender")
+}
+
+model HasMusicGender {
+  courseId Int 
+  genderId Int 
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  musicGender MusicGender @relation(fields: [genderId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, genderId]) 
+  @@map("has_music_gender")
+} 
+
+model HasInstruments { 
+  courseId Int
+  instrumentId Int
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade) 
+  instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
+ 
+  @@id([courseId, instrumentId])
+  @@map("has_instruments")
 }
