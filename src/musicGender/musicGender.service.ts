@@ -23,7 +23,7 @@ export class MusicGenderService {
     return gender;
   }
 
-  async addMusicGender(data: MusicGenderType) {
+  async addMusicGender(data: MusicGenderDTO) {
     const genderToLowerCase = data.description.toLowerCase();
 
     const genderExist =
@@ -40,7 +40,7 @@ export class MusicGenderService {
     });
   }
 
-  async updateMusicGender(data: MusicGenderType, id: number) {
+  async updateMusicGender(data: MusicGenderDTO, id: number) {
     const genderExist = await this.musicGenderRepository.findById(id);
 
     if (!genderExist) {

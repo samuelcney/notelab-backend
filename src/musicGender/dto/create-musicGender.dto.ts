@@ -1,4 +1,4 @@
-interface MusicGenderType {
+interface MusicGenderDTO {
   id: number;
   description: string;
 }

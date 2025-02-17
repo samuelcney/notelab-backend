@@ -25,7 +25,7 @@ export class MusicGenderRepository {
     });
   }
 
-  async create(data: MusicGenderType) {
+  async create(data: MusicGenderDTO) {
     return await this.prisma.musicGender.create({
       data: {
         description: data.description,
@@ -33,7 +33,7 @@ export class MusicGenderRepository {
     });
   }
 
-  async update(id: number, data: MusicGenderType) {
+  async update(id: number, data: MusicGenderDTO) {
     return await this.prisma.musicGender.update({
       data: {
         description: data.description,

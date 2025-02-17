@@ -1,4 +1,4 @@
-interface InstrumentType {
+interface InstrumentDTO {
   id: number;
   description: string;
 }

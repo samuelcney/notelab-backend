@@ -24,12 +24,12 @@ export class InstrumentsController {
   }
 
   @Post()
-  addInstrument(@Body() data: InstrumentType) {
+  addInstrument(@Body() data: InstrumentDTO) {
     return this.instrumentsService.addInstrument(data);
   }
 
   @Put('/:id')
-  updateInstrument(@Body() data: InstrumentType, @Param('id') id: number) {
+  updateInstrument(@Body() data: InstrumentDTO, @Param('id') id: number) {
     return this.instrumentsService.updateInstrument(data, Number(id));
   }
   @Delete('/:id')
