@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { MusicGenderService } from './musicGender.service';
 
 @Controller('musicGender')
@@ -12,16 +20,21 @@ export class MusicGenderController {
 
   @Get('/:id')
   getMusicGenderById(@Param('id') id: number) {
-    return this.musicGenderService.getMusicGenderById(id);
+    return this.musicGenderService.getMusicGenderById(Number(id));
   }
 
   @Post()
-  addMusicGender(@Body() description: string) {
-    return this.musicGenderService.addMusicGender(description);
+  addMusicGender(@Body() data: MusicGenderType) {
+    return this.musicGenderService.addMusicGender(data);
+  }
+
+  @Put('/:id')
+  updateInstrument(@Body() data: MusicGenderType, @Param('id') id: number) {
+    return this.musicGenderService.updateMusicGender(data, Number(id));
   }
 
   @Delete('/:id')
   deleteMusicGender(@Param('id') id: number) {
-    return this.musicGenderService.deleteMusicGender(id);
+    return this.musicGenderService.deleteMusicGender(Number(id));
   }
 }

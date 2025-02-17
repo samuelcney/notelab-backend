@@ -17,10 +17,29 @@ export class InstrumentsRepository {
     });
   }
 
-  async create(description: string) {
+  async findByDescription(desc: string) {
+    return await this.prisma.instrument.findFirst({
+      where: {
+        description: desc,
+      },
+    });
+  }
+
+  async create(data: InstrumentType) {
     return await this.prisma.instrument.create({
       data: {
-        description,
+        description: data.description,
+      },
+    });
+  }
+
+  async update(id: number, data: InstrumentType) {
+    return await this.prisma.instrument.update({
+      data: {
+        description: data.description,
+      },
+      where: {
+        id,
       },
     });
   }

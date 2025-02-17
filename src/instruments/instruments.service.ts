@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InstrumentsRepository } from './instruments.repo';
 
 @Injectable()
@@ -21,8 +25,35 @@ export class InstrumentsService {
     return instrument;
   }
 
-  async addInstrument(description: string) {
-    return await this.instrumentRepository.create(description);
+  async addInstrument(data: InstrumentType) {
+    const instrumentToLowerCase = data.description.toLowerCase();
+
+    const instrumentExist = await this.instrumentRepository.findByDescription(
+      instrumentToLowerCase,
+    );
+
+    if (instrumentExist) {
+      throw new ConflictException(
+        `O instrumento "${data.description}" já está cadastrado.`,
+      );
+    }
+
+    return await this.instrumentRepository.create({
+      ...data,
+      description: instrumentToLowerCase,
+    });
+  }
+
+  async updateInstrument(data: InstrumentType, id: number) {
+    const instrumentExist = await this.instrumentRepository.findById(id);
+
+    if (!instrumentExist) {
+      throw new ConflictException(
+        `O Instrumento com o ID ${id} não foi encontrado`,
+      );
+    }
+
+    return await this.instrumentRepository.update(instrumentExist.id, data);
   }
 
   async deleteInstrument(id: number) {

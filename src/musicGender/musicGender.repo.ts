@@ -17,10 +17,29 @@ export class MusicGenderRepository {
     });
   }
 
-  async create(description: string) {
+  async findByDescription(desc: string) {
+    return await this.prisma.musicGender.findFirst({
+      where: {
+        description: desc,
+      },
+    });
+  }
+
+  async create(data: MusicGenderType) {
     return await this.prisma.musicGender.create({
       data: {
-        description,
+        description: data.description,
+      },
+    });
+  }
+
+  async update(id: number, data: MusicGenderType) {
+    return await this.prisma.musicGender.update({
+      data: {
+        description: data.description,
+      },
+      where: {
+        id,
       },
     });
   }

@@ -24,7 +24,7 @@ export class UsersController {
 
   @Get('/:id')
   getUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getUserById(id);
+    return this.usersService.getUserById(Number(id));
   }
 
   @Get('/email')
@@ -40,6 +40,6 @@ export class UsersController {
 
   @Delete('/:id')
   deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.deleteUser(id);
+    return this.usersService.deleteUser(Number(id));
   }
 }

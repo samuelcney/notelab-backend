@@ -7,37 +7,59 @@ export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   async findByEmail(email: string) {
-    return await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
+
+    if (!user) return null;
+
+    const { password, ...userResponse } = user;
+    return userResponse;
   }
 
   async findById(id: number) {
-    return await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         id,
       },
     });
+
+    if (!user) return null;
+
+    const { password, ...userResponse } = user;
+    return userResponse;
   }
 
   async create(data: CreateUserDTO) {
-    return await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email: data.email,
         password: data.password,
         name: data.name,
       },
     });
+
+    const { password, ...userResponse } = user;
+    return userResponse;
   }
 
   async delete(id: number) {
-    return await this.prisma.user.delete({
+    await this.prisma.user.delete({
       where: {
         id,
       },

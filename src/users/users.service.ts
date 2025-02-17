@@ -7,8 +7,7 @@ import {
 import { UsersRepository } from './users.repo';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { UserResponseDTO } from './dto/user-response.dto';
-import { plainToClass } from 'class-transformer';
+import { formatDate } from 'src/utils/dateFormatter';
 
 @Injectable()
 export class UsersService {
@@ -17,9 +16,11 @@ export class UsersService {
   async getAllUsers() {
     const users = await this.usersRepository.findAll();
 
-    return users.map(user =>
-      plainToClass(UserResponseDTO, user, { excludeExtraneousValues: true }),
-    );
+    return users.map(user => ({
+      ...user,
+      createdAt: formatDate(user.createdAt),
+      updatedAt: formatDate(user.updatedAt),
+    }));
   }
 
   async getUserByEmail(email: string) {
@@ -27,25 +28,31 @@ export class UsersService {
 
     if (!user) {
       throw new NotFoundException(
-        `O usuário com o email ${email} não encontrado`,
+        `O usuário com o email ${email} não foi encontrado`,
       );
     }
 
-    return plainToClass(UserResponseDTO, user, {
-      excludeExtraneousValues: true,
-    });
+    return {
+      ...user,
+      createdAt: formatDate(user.createdAt),
+      updatedAt: formatDate(user.updatedAt),
+    };
   }
 
   async getUserById(id: number) {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
-      throw new NotFoundException(`O usuário com o ID ${id} não encontrado`);
+      throw new NotFoundException(
+        `O usuário com o ID ${id} não foi encontrado`,
+      );
     }
 
-    return plainToClass(UserResponseDTO, user, {
-      excludeExtraneousValues: true,
-    });
+    return {
+      ...user,
+      createdAt: formatDate(user.createdAt),
+      updatedAt: formatDate(user.updatedAt),
+    };
   }
 
   async createUser(data: CreateUserDTO) {
@@ -64,9 +71,11 @@ export class UsersService {
         password: hashPassword,
       });
 
-      return plainToClass(UserResponseDTO, user, {
-        excludeExtraneousValues: true,
-      });
+      return {
+        ...user,
+        createdAt: formatDate(user.createdAt),
+        updatedAt: formatDate(user.updatedAt),
+      };
     } catch (error: any) {
       console.error('Erro ao criar usuário:', error);
 
@@ -81,6 +90,14 @@ export class UsersService {
   }
 
   async deleteUser(id: number) {
+    const userExist = this.usersRepository.findById(id);
+
+    if (!userExist) {
+      throw new NotFoundException(
+        `O usuário com o ID ${id} não foi encontrado`,
+      );
+    }
+
     return await this.usersRepository.delete(id);
   }
 }
