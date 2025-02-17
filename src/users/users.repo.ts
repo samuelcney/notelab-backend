@@ -24,12 +24,20 @@ export class UsersRepository {
       where: {
         email,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        password: true,
+      },
     });
 
     if (!user) return null;
 
-    const { password, ...userResponse } = user;
-    return userResponse;
+    return user;
   }
 
   async findById(id: number) {
@@ -37,12 +45,19 @@ export class UsersRepository {
       where: {
         id,
       },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     if (!user) return null;
 
-    const { password, ...userResponse } = user;
-    return userResponse;
+    return user;
   }
 
   async create(data: CreateUserDTO) {
