@@ -2,8 +2,9 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
-import { UsersRepository } from './users.repository';
+import { UsersRepository } from './users.repo';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UserResponseDTO } from './dto/user-response.dto';
@@ -19,6 +20,32 @@ export class UsersService {
     return users.map(user =>
       plainToClass(UserResponseDTO, user, { excludeExtraneousValues: true }),
     );
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.usersRepository.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(
+        `O usuário com o email ${email} não encontrado`,
+      );
+    }
+
+    return plainToClass(UserResponseDTO, user, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async getUserById(id: number) {
+    const user = await this.usersRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(`O usuário com o ID ${id} não encontrado`);
+    }
+
+    return plainToClass(UserResponseDTO, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async createUser(data: CreateUserDTO) {
@@ -51,5 +78,9 @@ export class UsersService {
         'Erro inesperado ao criar usuário',
       );
     }
+  }
+
+  async deleteUser(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }
