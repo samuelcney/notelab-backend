@@ -4,7 +4,7 @@ import { UsersModule } from './users/users.module';
 import { InstrumentsModule } from './instruments/instruments.module';
 import { MusicGenderModule } from './musicGender/musicGender.module';
 import { CoursesModule } from './course/course.module';
-import { LoginModule } from './login/login.module';
+import { AuthModule } from './login/auth.module';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { LoginModule } from './login/login.module';
     InstrumentsModule,
     MusicGenderModule,
     CoursesModule,
-    LoginModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
