@@ -25,7 +25,7 @@ export class InstrumentsRepository {
     });
   }
 
-  async create(data: InstrumentType) {
+  async create(data: InstrumentDTO) {
     return await this.prisma.instrument.create({
       data: {
         description: data.description,
@@ -33,7 +33,7 @@ export class InstrumentsRepository {
     });
   }
 
-  async update(id: number, data: InstrumentType) {
+  async update(id: number, data: InstrumentDTO) {
     return await this.prisma.instrument.update({
       data: {
         description: data.description,

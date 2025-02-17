@@ -25,7 +25,7 @@ export class InstrumentsService {
     return instrument;
   }
 
-  async addInstrument(data: InstrumentType) {
+  async addInstrument(data: InstrumentDTO) {
     const instrumentToLowerCase = data.description.toLowerCase();
 
     const instrumentExist = await this.instrumentRepository.findByDescription(
@@ -44,7 +44,7 @@ export class InstrumentsService {
     });
   }
 
-  async updateInstrument(data: InstrumentType, id: number) {
+  async updateInstrument(data: InstrumentDTO, id: number) {
     const instrumentExist = await this.instrumentRepository.findById(id);
 
     if (!instrumentExist) {

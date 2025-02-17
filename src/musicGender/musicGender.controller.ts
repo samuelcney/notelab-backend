@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { MusicGenderService } from './musicGender.service';
 
-@Controller('musicGender')
+@Controller('music-gender')
 export class MusicGenderController {
   constructor(private readonly musicGenderService: MusicGenderService) {}
 
@@ -24,12 +24,12 @@ export class MusicGenderController {
   }
 
   @Post()
-  addMusicGender(@Body() data: MusicGenderType) {
+  addMusicGender(@Body() data: MusicGenderDTO) {
     return this.musicGenderService.addMusicGender(data);
   }
 
   @Put('/:id')
-  updateInstrument(@Body() data: MusicGenderType, @Param('id') id: number) {
+  updateInstrument(@Body() data: MusicGenderDTO, @Param('id') id: number) {
     return this.musicGenderService.updateMusicGender(data, Number(id));
   }
 
