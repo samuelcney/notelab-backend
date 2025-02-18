@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
+import { CreateModuleDTO } from './dto/create-module.dto';
 
 @Controller('modules')
 export class ChapterController {
@@ -18,5 +19,10 @@ export class ChapterController {
   @Get('/course/:id')
   getModuleByCourseId(@Param('id') id: number) {
     return this.chapterService.getModuleByCourseId(id);
+  }
+
+  @Post()
+  createModule(@Body() data: CreateModuleDTO) {
+    return this.chapterService.createModule(data);
   }
 }

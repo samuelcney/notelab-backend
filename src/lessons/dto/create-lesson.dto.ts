@@ -1,12 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-const AddMaterialLessonSchema = z.object({
+const createLessonSchema = z.object({
+  moduleId: z.number(),
   title: z.string(),
   type: z.enum(['QUIZ', 'TEXT', 'PDF', 'VIDEO']),
   content: z.string().optional(),
 });
 
-export class AddMaterialToCourseDTO extends createZodDto(
-  AddMaterialLessonSchema,
-) {}
+export class CreateLessonDTO extends createZodDto(createLessonSchema) {}

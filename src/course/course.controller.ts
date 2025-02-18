@@ -16,12 +16,4 @@ export class CoursesController {
   addCourse(@Body() data: CreateCourseDTO) {
     return this.coursesService.addCourse(data);
   }
-
-  @Put('/:id')
-  addMaterialToCourse(
-    @Param('id') courseId: number,
-    @Body() data: AddMaterialToCourseDTO,
-  ) {
-    return this.coursesService.addMaterialToCourse(courseId, data);
-  }
 }

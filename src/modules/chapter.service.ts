@@ -23,7 +23,7 @@ export class ChapterService {
   }
 
   async createModule(data: CreateModuleDTO) {
-    const existCourse = this.coursesRepository.findById(data.courseId);
+    const existCourse = await this.coursesRepository.findById(data.courseId);
 
     if (!existCourse) {
       throw new NotFoundException(

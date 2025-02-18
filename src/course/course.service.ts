@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CoursesRepository } from './course.repo';
 import { CreateCourseDTO } from './dto/create-course.dto';
-import { AddMaterialToCourseDTO } from './dto/add-material.dto';
 
 @Injectable()
 export class CoursesService {
@@ -13,9 +12,5 @@ export class CoursesService {
 
   async addCourse(data: CreateCourseDTO) {
     return await this.coursesRepository.create(data);
-  }
-
-  async addMaterialToCourse(courseId: number, data: AddMaterialToCourseDTO) {
-    return await this.coursesRepository.addMaterial(courseId, data);
   }
 }
