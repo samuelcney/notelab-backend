@@ -87,22 +87,8 @@ model Course {
   hasInstruments HasInstruments[]
   hasMusicGender HasMusicGender[]
   enrollment Enrollment[]
-  CourseMaterial CourseMaterial[]
 
   @@map("courses")  
-}
-
-model CourseMaterial {
-  id         Int         @id @default(autoincrement())
-  courseId   Int
-  course     Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  title      String
-  type       MaterialType
-  content    String?     
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-
-  @@map("course_materials")
 }
 
 model Module {
@@ -121,8 +107,10 @@ model Lesson {
   title    String
   content  String?
   moduleId Int
-  module   Module  @relation(fields: [moduleId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
+  module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  type       MaterialType
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
 
   @@map("lessons")
 }
