@@ -25,7 +25,6 @@ export class CoursesRepository {
             musicGender: true,
           },
         },
-        CourseMaterial: true,
       },
     });
   }
@@ -60,41 +59,13 @@ export class CoursesRepository {
               genderId: gender.genderId,
             })) || [],
         },
-
-        CourseMaterial: {
-          create:
-            data.courseMaterials?.map(material => ({
-              title: material.title,
-              type: material.type,
-              content: material.content,
-            })) || [],
-        },
       },
       include: {
         hasInstruments: true,
         hasMusicGender: true,
-        CourseMaterial: true,
       },
     });
 
     return newCourse;
-  }
-
-  async addMaterial(id: number, data: AddMaterialToCourseDTO) {
-    return await this.prisma.course.update({
-      where: { id },
-      data: {
-        CourseMaterial: {
-          create: data.courseMaterials.map(material => ({
-            title: material.title,
-            type: material.type,
-            content: material.content,
-          })),
-        },
-      },
-      include: {
-        CourseMaterial: true,
-      },
-    });
   }
 }

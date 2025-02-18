@@ -5,6 +5,8 @@ import { InstrumentsModule } from './instruments/instruments.module';
 import { MusicGenderModule } from './musicGender/musicGender.module';
 import { CoursesModule } from './course/course.module';
 import { AuthModule } from './login/auth.module';
+import { ChapterModule } from './modules/chapter.module';
+import { LessonModule } from './lessons/lesson.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { AuthModule } from './login/auth.module';
     MusicGenderModule,
     CoursesModule,
     AuthModule,
+    ChapterModule,
+    LessonModule,
   ],
 })
 export class AppModule {}

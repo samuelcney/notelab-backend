@@ -10,15 +10,6 @@ const CreateCourseSchema = z.object({
   instructorId: z.number(),
   hasInstruments: z.array(z.object({ instrumentId: z.number() })).optional(),
   hasMusicGender: z.array(z.object({ genderId: z.number() })).optional(),
-  courseMaterials: z
-    .array(
-      z.object({
-        title: z.string(),
-        type: z.enum(['QUIZ', 'TEXT', 'PDF', 'VIDEO']),
-        content: z.string().optional(),
-      }),
-    )
-    .optional(),
 });
 
 export class CreateCourseDTO extends createZodDto(CreateCourseSchema) {}
