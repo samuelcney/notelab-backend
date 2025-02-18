@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from '../src/users/controller/user.controller';
-import { AppService } from '../src/users/users.service';
+import { AppController } from '../src/app.controller';
+import { AppService } from '../src/app.service';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -15,8 +15,11 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "the server is operating correctly"', () => {
+      expect(appController.getAppInfoTest()).toEqual({
+        statusCode: 200,
+        message: 'the server is operating correctly',
+      });
     });
   });
 });
