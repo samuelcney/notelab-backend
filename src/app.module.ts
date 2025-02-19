@@ -10,6 +10,7 @@ import { LessonModule } from './lessons/lesson.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { EnrollmentModule } from './enrollment/enrollment.module';
+import { ApproveRequestModule } from './approveRequests/approve-request.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
     ChapterModule,
     LessonModule,
     EnrollmentModule,
+    ApproveRequestModule,
   ],
   providers: [AppService],
   controllers: [AppController],
