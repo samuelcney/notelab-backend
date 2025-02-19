@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { LessonsRepository } from './lesson.repo';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { ChapterRepository } from 'src/modules/chapter.repo';
+import { ChapterService } from 'src/modules/chapter.service';
 
 @Injectable()
 export class LessonsService {
   constructor(
     private readonly lessonRepository: LessonsRepository,
-    private readonly chapterRepository: ChapterRepository,
+    private readonly chapterService: ChapterService,
   ) {}
 
   async getAllLessons() {
@@ -23,13 +24,7 @@ export class LessonsService {
   }
 
   async addLesson(data: CreateLessonDTO) {
-    const existModule = await this.chapterRepository.findById(data.moduleId);
-
-    if (!existModule) {
-      throw new NotFoundException(
-        `O módulo com o ID ${data.moduleId} não foi encontrado`,
-      );
-    }
+    await this.chapterService.getModuleById(data.moduleId);
 
     return await this.lessonRepository.create(data);
   }

@@ -9,6 +9,6 @@ import { ChapterRepository } from './chapter.repo';
   imports: [PrismaModule, CoursesModule],
   providers: [ChapterService, ChapterRepository],
   controllers: [ChapterController],
-  exports: [ChapterService, ChapterRepository],
+  exports: [ChapterService],
 })
 export class ChapterModule {}

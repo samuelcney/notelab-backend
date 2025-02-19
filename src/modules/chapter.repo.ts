@@ -43,4 +43,12 @@ export class ChapterRepository {
 
     return newModule;
   }
+
+  async delete(id: number) {
+    return await this.prisma.module.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
