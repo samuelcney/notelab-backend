@@ -6,15 +6,25 @@ import { ConflictException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let usersService: UsersService;
+
+  const usersDB = new Map();
+
   let prismaServiceMock;
 
   beforeEach(async () => {
     prismaServiceMock = {
       user: {
-        create: jest.fn().mockImplementation(data => ({
-          id: Date.now(),
-          ...data,
-        })),
+        create: jest.fn().mockImplementation(({ data }) => {
+          if (data.email === 'test@example.com') {
+            throw new ConflictException('O e-mail inserido já está cadastrado');
+          }
+          return {
+            id: Date.now(),
+            ...data,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+        }),
         findUnique: jest.fn().mockImplementation(({ where }) => {
           return where.email === 'test@example.com'
             ? { id: 1, name: 'John Doe', email: 'test@example.com' }
@@ -35,12 +45,14 @@ describe('UsersService', () => {
   });
 
   it('should create and retrieve a user', async () => {
-    const email = `user${Date.now()}@example.com`;
+    const email = 'unique_test_user@example.com';
     const user = await usersService.createUser({
       name: 'John Doe',
       email: email,
       password: '12345678',
     });
+
+    console.log(user);
 
     expect(user).toHaveProperty('id');
     expect(user.name).toBe('John Doe');

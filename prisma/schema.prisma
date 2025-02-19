@@ -42,12 +42,13 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   approvedRequest ApproveInstructorRequest?
+  isApprovedAccount Boolean @default(false)
+  isActiveUser Boolean @default(true)
 
   courses Course[]
   enrollments Enrollment[]
 
   @@map("users")
-  
 }
 
 model ApproveInstructorRequest {

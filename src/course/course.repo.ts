@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCourseDTO } from './dto/create-course.dto';
-import { AddMaterialToCourseDTO } from './dto/add-material.dto';
 
 @Injectable()
 export class CoursesRepository {
@@ -15,13 +14,20 @@ export class CoursesRepository {
             name: true,
           },
         },
+        modules: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        },
         hasInstruments: {
-          include: {
+          select: {
             instrument: true,
           },
         },
         hasMusicGender: {
-          include: {
+          select: {
             musicGender: true,
           },
         },

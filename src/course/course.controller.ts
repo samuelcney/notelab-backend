@@ -12,6 +12,11 @@ export class CoursesController {
     return this.coursesService.getAllCourses();
   }
 
+  @Get('/:id')
+  getCourseById(@Param('id') id: number) {
+    return this.coursesService.getCourseById(Number(id));
+  }
+
   @Post()
   addCourse(@Body() data: CreateCourseDTO) {
     return this.coursesService.addCourse(data);

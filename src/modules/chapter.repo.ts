@@ -15,6 +15,9 @@ export class ChapterRepository {
       where: {
         id,
       },
+      include: {
+        lessons: true,
+      },
     });
   }
 

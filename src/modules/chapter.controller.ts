@@ -13,12 +13,12 @@ export class ChapterController {
 
   @Get('/:id')
   getModuleById(@Param('id') id: number) {
-    return this.chapterService.getModuleById(id);
+    return this.chapterService.getModuleById(Number(id));
   }
 
   @Get('/course/:id')
   getModuleByCourseId(@Param('id') id: number) {
-    return this.chapterService.getModuleByCourseId(id);
+    return this.chapterService.getModuleByCourseId(Number(id));
   }
 
   @Post()

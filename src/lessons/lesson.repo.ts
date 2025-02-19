@@ -7,7 +7,11 @@ export class LessonsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.lesson.findMany();
+    return await this.prisma.lesson.findMany({
+      include: {
+        module: true,
+      },
+    });
   }
 
   async findById(id: number) {
@@ -33,6 +37,9 @@ export class LessonsRepository {
         type: data.type,
         content: data.content,
         moduleId: data.moduleId,
+      },
+      include: {
+        module: true,
       },
     });
 
