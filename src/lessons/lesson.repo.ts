@@ -45,4 +45,12 @@ export class LessonsRepository {
 
     return newLesson;
   }
+
+  async delete(id: number) {
+    return await this.prisma.lesson.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

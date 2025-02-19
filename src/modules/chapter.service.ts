@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ChapterRepository } from './chapter.repo';
 import { CoursesRepository } from 'src/course/course.repo';
 import { CreateModuleDTO } from './dto/create-module.dto';
+import { CoursesService } from 'src/course/course.service';
 
 @Injectable()
 export class ChapterService {
   constructor(
     private readonly chapterRepository: ChapterRepository,
-    private readonly coursesRepository: CoursesRepository,
+    private readonly courseService: CoursesService,
   ) {}
 
   async getAllModules() {
@@ -23,13 +24,7 @@ export class ChapterService {
   }
 
   async createModule(data: CreateModuleDTO) {
-    const existCourse = await this.coursesRepository.findById(data.courseId);
-
-    if (!existCourse) {
-      throw new NotFoundException(
-        `O curso com o ID ${data.courseId} não foi encontrado`,
-      );
-    }
+    await this.courseService.getCourseById(data.courseId);
 
     return await this.chapterRepository.create(data);
   }

@@ -69,6 +69,7 @@ model Enrollment {
   courseId Int
   course   Course  @relation(fields: [courseId], references: [id])
   createdAt   DateTime  @default(now()) @map("created_at")
+  isActive Boolean @default(true)
 
   @@map("enrollments")
 }
