@@ -5,11 +5,26 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class EnrollmentRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  private userSelect = {
+    id: true,
+    email: true,
+    name: true,
+    role: true,
+  };
+
   async findAll() {
     return await this.prisma.enrollment.findMany({
       include: {
-        course: true,
-        user: true,
+        course: {
+          include: {
+            instructor: {
+              select: this.userSelect,
+            },
+          },
+        },
+        user: {
+          select: this.userSelect,
+        },
       },
     });
   }
@@ -20,8 +35,16 @@ export class EnrollmentRepository {
         id,
       },
       include: {
-        course: true,
-        user: true,
+        course: {
+          include: {
+            instructor: {
+              select: this.userSelect,
+            },
+          },
+        },
+        user: {
+          select: this.userSelect,
+        },
       },
     });
   }
@@ -32,8 +55,16 @@ export class EnrollmentRepository {
         courseId,
       },
       include: {
-        course: true,
-        user: true,
+        course: {
+          include: {
+            instructor: {
+              select: this.userSelect,
+            },
+          },
+        },
+        user: {
+          select: this.userSelect,
+        },
       },
     });
   }
@@ -44,8 +75,16 @@ export class EnrollmentRepository {
         userId,
       },
       include: {
-        course: true,
-        user: true,
+        course: {
+          include: {
+            instructor: {
+              select: this.userSelect,
+            },
+          },
+        },
+        user: {
+          select: this.userSelect,
+        },
       },
     });
   }
@@ -57,8 +96,16 @@ export class EnrollmentRepository {
         userId: data.userId,
       },
       include: {
-        course: true,
-        user: true,
+        course: {
+          include: {
+            instructor: {
+              select: this.userSelect,
+            },
+          },
+        },
+        user: {
+          select: this.userSelect,
+        },
       },
     });
   }

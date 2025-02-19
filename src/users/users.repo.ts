@@ -6,16 +6,18 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  private userSelect = {
+    id: true,
+    email: true,
+    name: true,
+    role: true,
+    createdAt: true,
+    updatedAt: true,
+  };
+
   async findAll() {
     return await this.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      select: this.userSelect,
     });
   }
 
@@ -45,14 +47,7 @@ export class UsersRepository {
       where: {
         id,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      select: this.userSelect,
     });
 
     if (!user) return null;
@@ -73,6 +68,17 @@ export class UsersRepository {
     return userResponse;
   }
 
+  async update(id: number, data: Partial<CreateUserDTO>) {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+      select: this.userSelect,
+    });
+
+    return user;
+  }
   async delete(id: number) {
     await this.prisma.user.delete({
       where: {
