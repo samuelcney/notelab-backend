@@ -14,6 +14,15 @@ describe('Testing All Controllers Operating (GET)', () => {
       .overrideProvider(PrismaService)
       .useValue({
         user: { findMany: jest.fn().mockResolvedValue([]) },
+        instrument: { findMany: jest.fn().mockResolvedValue([]) },
+        musicGender: { findMany: jest.fn().mockResolvedValue([]) },
+        course: { findMany: jest.fn().mockResolvedValue([]) },
+        module: { findMany: jest.fn().mockResolvedValue([]) },
+        lesson: { findMany: jest.fn().mockResolvedValue([]) },
+        enrollment: { findMany: jest.fn().mockResolvedValue([]) },
+        approveInstructorRequest: {
+          findMany: jest.fn().mockResolvedValue([]),
+        },
       })
       .compile();
 
@@ -34,7 +43,7 @@ describe('Testing All Controllers Operating (GET)', () => {
   });
 
   it('/ (GET) : courses', () => {
-    return request(app.getHttpServer()).get('/users').expect(200);
+    return request(app.getHttpServer()).get('/courses').expect(200);
   });
 
   it('/ (GET) : modules', () => {
@@ -49,7 +58,7 @@ describe('Testing All Controllers Operating (GET)', () => {
     return request(app.getHttpServer()).get('/enrollment').expect(200);
   });
 
-  it('/ (GET) : approve-request', () => {
+  it('/ (GET) : approve-requests', () => {
     return request(app.getHttpServer()).get('/approve-requests').expect(200);
   });
 });
