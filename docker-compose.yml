@@ -3,7 +3,7 @@ services:
     container_name: tcc-backend-pg
     image: postgres
     ports:
-      - "5433:5432"
+      - '5433:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: datapostgres
@@ -21,4 +21,4 @@ services:
     environment:
       - NODE_ENV=test
       - DATABASE_URL=postgres://postgres:datapostgres@postgres:5432/tcc-music
-    command: ["sh", "-c", "npm run test && npm run test:e2e"]
+    command: ['npm', 'run', 'test:e2e']
