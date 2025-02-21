@@ -44,7 +44,7 @@ model User {
   approvedRequest ApproveInstructorRequest?
   isApprovedAccount Boolean @default(false)
   isActiveUser Boolean @default(true)
-  
+
   Cart Cart[]
   courses Course[]
   enrollments Enrollment[]
@@ -177,7 +177,7 @@ model CartItem {
   cart        Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
   courseId    Int
   course      Course    @relation(fields: [courseId], references: [id])
-  quantity    Int       @default(1)
+  totalValue  Float
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
