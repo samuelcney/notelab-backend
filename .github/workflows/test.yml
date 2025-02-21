@@ -1,0 +1,9 @@
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Docker Compose e rodar testes
+        run: docker-compose up --abort-on-container-exit --exit-code-from tests
