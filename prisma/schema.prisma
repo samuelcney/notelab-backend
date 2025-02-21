@@ -44,11 +44,13 @@ model User {
   approvedRequest ApproveInstructorRequest?
   isApprovedAccount Boolean @default(false)
   isActiveUser Boolean @default(true)
-
+  
+  Cart Cart[]
   courses Course[]
   enrollments Enrollment[]
 
   @@map("users")
+  
 }
 
 model ApproveInstructorRequest {
@@ -91,6 +93,7 @@ model Course {
   hasInstruments HasInstruments[]
   hasMusicGender HasMusicGender[]
   enrollment Enrollment[]
+  CartItem CartItem[]
 
   @@map("courses")  
 }
@@ -155,4 +158,28 @@ model HasInstruments {
  
   @@id([courseId, instrumentId])
   @@map("has_instruments")
+}
+
+model Cart {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  cartItems   CartItem[] 
+
+  @@map("carts")
+}
+
+model CartItem {
+  id          Int       @id @default(autoincrement())
+  cartId      Int
+  cart        Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  courseId    Int
+  course      Course    @relation(fields: [courseId], references: [id])
+  quantity    Int       @default(1)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("cart_items")
 }
