@@ -1,4 +1,3 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -15,8 +14,7 @@ describe('Testing All Controllers Operating (GET)', () => {
       .overrideProvider(PrismaService)
       .useValue({
         user: { findMany: jest.fn().mockResolvedValue([]) },
-        instrument: { findMany: jest.fn().mockResolvedValue([]) },
-        musicGender: { findMany: jest.fn().mockResolvedValue([]) },
+        category: { findMany: jest.fn().mockResolvedValue([]) },
         course: { findMany: jest.fn().mockResolvedValue([]) },
         module: { findMany: jest.fn().mockResolvedValue([]) },
         lesson: { findMany: jest.fn().mockResolvedValue([]) },
@@ -35,12 +33,8 @@ describe('Testing All Controllers Operating (GET)', () => {
     return request(app.getHttpServer()).get('/users').expect(200);
   });
 
-  it('/ (GET) : instruments', () => {
-    return request(app.getHttpServer()).get('/instruments').expect(200);
-  });
-
-  it('/ (GET) : music genders', () => {
-    return request(app.getHttpServer()).get('/music-gender').expect(200);
+  it('/ (GET) : categories', () => {
+    return request(app.getHttpServer()).get('/categories').expect(200);
   });
 
   it('/ (GET) : courses', () => {

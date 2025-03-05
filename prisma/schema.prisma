@@ -34,46 +34,45 @@ enum MaterialType {
 
 model User {
   id          Int       @id @default(autoincrement())
-  email		  String    @unique
+  email       String    @unique
   name        String
-  password	  String
-  role  Role  @default(STUDENT)
+  password    String
+  role        Role      @default(STUDENT)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-
+  
   approvedRequest ApproveInstructorRequest?
   isApprovedAccount Boolean @default(false)
   isActiveUser Boolean @default(true)
-
+  
   Cart Cart[]
   courses Course[]
   enrollments Enrollment[]
-
-  @@map("users")
   
+  @@map("users")
 }
 
 model ApproveInstructorRequest {
   id          Int       @id @default(autoincrement())
   userId      Int       @unique
-  user 		    User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   status      RequestStatus    @default(PENDING)
   certificate String
   createdAt   DateTime  @default(now()) @map("created_at")
-  approvedAt DateTime? @map("approved_at")
-  rejectedAt DateTime? @map("rejected_at")
-
+  approvedAt  DateTime? @map("approved_at")
+  rejectedAt  DateTime? @map("rejected_at")
+  
   @@map("approve_request")
 }
 
 model Enrollment {
   id          Int       @id @default(autoincrement())
   userId      Int
-  user 		  User      @relation(fields: [userId], references: [id])
-  courseId Int
-  course   Course  @relation(fields: [courseId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  courseId    Int
+  course      Course    @relation(fields: [courseId], references: [id])
   createdAt   DateTime  @default(now()) @map("created_at")
-  isActive Boolean @default(true)
+  isActive    Boolean   @default(true)
 
   @@map("enrollments")
 }
@@ -83,19 +82,36 @@ model Course {
   name        String
   description String
   price       Float     @default(0)
-  difficulty Difficulty
+  difficulty  Difficulty
   instructorId Int
   instructor   User   @relation(fields: [instructorId], references: [id])
   modules     Module[]
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-
-  hasInstruments HasInstruments[]
-  hasMusicGender HasMusicGender[]
+  
+  categories CourseCategory[]
   enrollment Enrollment[]
-  CartItem CartItem[]
-
+  CartItem   CartItem[]
+  
   @@map("courses")  
+}
+
+model CourseCategory {
+  courseId   Int
+  categoryId Int
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  @@id([courseId, categoryId])
+  @@map("course_categories")
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  courses CourseCategory[]
+  
+  @@map("categories")
 }
 
 model Module {
@@ -115,49 +131,11 @@ model Lesson {
   content  String?
   moduleId Int
   module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  type       MaterialType
+  type     MaterialType
   createdAt  DateTime    @default(now()) @map("created_at")
   updatedAt  DateTime    @updatedAt @map("updated_at")
-
+  
   @@map("lessons")
-}
-
-model Instrument {
-  id           Int     @id @default(autoincrement())
-  description  String
-
-  hasIntruments HasInstruments[]
-  
-  @@map("instruments")  
-}
-
-model MusicGender {
-  id           Int     @id @default(autoincrement())
-  description  String
-  
-  hasMusicGender HasMusicGender[]
-
-  @@map("music_gender")
-}
-
-model HasMusicGender {
-  courseId Int 
-  genderId Int 
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  musicGender MusicGender @relation(fields: [genderId], references: [id], onDelete: Cascade)
-
-  @@id([courseId, genderId]) 
-  @@map("has_music_gender")
-} 
-
-model HasInstruments { 
-  courseId Int
-  instrumentId Int
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade) 
-  instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
- 
-  @@id([courseId, instrumentId])
-  @@map("has_instruments")
 }
 
 model Cart {

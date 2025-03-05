@@ -24,14 +24,9 @@ export class CoursesRepository {
             createdAt: true,
           },
         },
-        hasInstruments: {
-          select: {
-            instrument: true,
-          },
-        },
-        hasMusicGender: {
-          select: {
-            musicGender: true,
+        categories: {
+          include: {
+            category: true,
           },
         },
       },
@@ -40,8 +35,13 @@ export class CoursesRepository {
 
   async findById(id: number) {
     return await this.prisma.course.findUnique({
-      where: {
-        id,
+      where: { id },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
   }
@@ -55,23 +55,15 @@ export class CoursesRepository {
         difficulty: data.difficulty,
         instructorId: data.instructorId,
 
-        hasInstruments: {
+        categories: {
           create:
-            data.hasInstruments?.map(instrument => ({
-              instrumentId: instrument.instrumentId,
-            })) || [],
-        },
-
-        hasMusicGender: {
-          create:
-            data.hasMusicGender?.map(gender => ({
-              genderId: gender.genderId,
+            data.categories?.map(category => ({
+              categoryId: category.categoryId,
             })) || [],
         },
       },
       include: {
-        hasInstruments: true,
-        hasMusicGender: true,
+        categories: true,
       },
     });
 
