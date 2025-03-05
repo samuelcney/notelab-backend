@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class InstrumentsRepository {
+export class CategoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.instrument.findMany();
+    return await this.prisma.category.findMany();
   }
 
   async findById(id: number) {
-    return await this.prisma.instrument.findUnique({
+    return await this.prisma.category.findUnique({
       where: {
         id,
       },
@@ -18,25 +18,25 @@ export class InstrumentsRepository {
   }
 
   async findByDescription(desc: string) {
-    return await this.prisma.instrument.findFirst({
+    return await this.prisma.category.findFirst({
       where: {
-        description: desc,
+        name: desc,
       },
     });
   }
 
-  async create(data: InstrumentDTO) {
-    return await this.prisma.instrument.create({
+  async create(data: CategoryDTO) {
+    return await this.prisma.category.create({
       data: {
-        description: data.description,
+        name: data.name,
       },
     });
   }
 
-  async update(id: number, data: InstrumentDTO) {
-    return await this.prisma.instrument.update({
+  async update(id: number, data: CategoryDTO) {
+    return await this.prisma.category.update({
       data: {
-        description: data.description,
+        name: data.name,
       },
       where: {
         id,
@@ -45,7 +45,7 @@ export class InstrumentsRepository {
   }
 
   async delete(id: number) {
-    return await this.prisma.instrument.delete({
+    return await this.prisma.category.delete({
       where: {
         id,
       },
