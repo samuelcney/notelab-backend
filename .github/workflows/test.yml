@@ -3,10 +3,10 @@ name: CI Workflow
 on:
   push:
     branches:
-      - feat/tests
+      - development
   pull_request:
     branches:
-      - feat/tests
+      - development
 
 jobs:
   test:
