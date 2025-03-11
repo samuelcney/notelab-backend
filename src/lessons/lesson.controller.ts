@@ -13,12 +13,12 @@ export class LessonController {
 
   @Get('/:id')
   getModuleById(@Param('id') id: number) {
-    return this.lessonService.getLessonById(id);
+    return this.lessonService.getLessonById(Number(id));
   }
 
   @Get('/module/:id')
   getLessonByModuleId(@Param('id') id: number) {
-    return this.lessonService.getLessonByModuleId(id);
+    return this.lessonService.getLessonByModuleId(Number(id));
   }
 
   @Post()
