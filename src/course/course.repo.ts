@@ -22,6 +22,7 @@ export class CoursesRepository {
             id: true,
             name: true,
             createdAt: true,
+            lessons: true,
           },
         },
         categories: {
@@ -40,6 +41,22 @@ export class CoursesRepository {
         categories: {
           include: {
             category: true,
+          },
+        },
+        instructor: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+        modules: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            lessons: true,
           },
         },
       },
@@ -68,5 +85,27 @@ export class CoursesRepository {
     });
 
     return newCourse;
+  }
+
+  async update(id: number, data: Partial<CreateCourseDTO>) {
+    return await this.prisma.course.update({
+      where: { id },
+      data: {
+        ...Object.fromEntries(
+          Object.entries(data).filter(([_, value]) => value !== undefined),
+        ),
+        categories: data.categories
+          ? {
+              deleteMany: {},
+              create: data.categories.map(category => ({
+                categoryId: category.categoryId,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        categories: true,
+      },
+    });
   }
 }

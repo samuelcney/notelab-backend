@@ -21,4 +21,9 @@ export class CoursesController {
   addCourse(@Body() data: CreateCourseDTO) {
     return this.coursesService.addCourse(data);
   }
+
+  @Put('/:id')
+  updateCourse(@Body() data: CreateCourseDTO, @Param('id') id: number) {
+    return this.coursesService.updateCourse(Number(id), data);
+  }
 }

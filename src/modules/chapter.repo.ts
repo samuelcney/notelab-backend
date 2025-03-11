@@ -7,7 +7,11 @@ export class ChapterRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.module.findMany();
+    return await this.prisma.module.findMany({
+      include: {
+        lessons: true,
+      },
+    });
   }
 
   async findById(id: number) {

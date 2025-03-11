@@ -23,4 +23,8 @@ export class CoursesService {
   async addCourse(data: CreateCourseDTO) {
     return await this.coursesRepository.create(data);
   }
+
+  async updateCourse(id: number, data: Partial<CreateCourseDTO>) {
+    return await this.coursesRepository.update(id, data);
+  }
 }
