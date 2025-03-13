@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from '../src/users/users.service';
-import { UsersRepository } from '../src/users/users.repo';
 import {
   NotFoundException,
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { UsersRepository } from 'src/repositories/users.repo';
+import { UsersService } from 'src/services/users.service';
 
 describe('UsersService', () => {
   let usersService: UsersService;

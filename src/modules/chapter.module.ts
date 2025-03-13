@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { CoursesModule } from 'src/course/course.module';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { ChapterService } from './chapter.service';
-import { ChapterController } from './chapter.controller';
-import { ChapterRepository } from './chapter.repo';
+import { ChapterService } from '../services/chapter.service';
+import { ChapterRepository } from '../repositories/chapter.repo';
+import { ChapterController } from 'src/controllers/chapter.controller';
+import { CoursesModule } from './course.module';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   imports: [PrismaModule, CoursesModule],
