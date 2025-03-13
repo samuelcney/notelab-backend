@@ -66,8 +66,7 @@ export class UsersService {
       const hashPassword = bcrypt.hashSync(data.password, 10);
 
       const user = await this.usersRepository.create({
-        email: data.email,
-        name: data.name,
+        ...data,
         password: hashPassword,
       });
 
@@ -87,6 +86,18 @@ export class UsersService {
         'Erro inesperado ao criar usuário',
       );
     }
+  }
+
+  async updateUser(id: number, data: CreateUserDTO) {
+    const userExist = this.usersRepository.findById(id);
+
+    if (!userExist) {
+      throw new NotFoundException(
+        `O usuário com o ID ${id} não foi encontrado`,
+      );
+    }
+
+    return await this.usersRepository.update(id, data);
   }
 
   async deleteUser(id: number) {

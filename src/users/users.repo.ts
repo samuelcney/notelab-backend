@@ -13,6 +13,8 @@ export class UsersRepository {
     role: true,
     createdAt: true,
     updatedAt: true,
+    isActiveUser: true,
+    isApprovedAccount: true,
   };
 
   async findAll() {
@@ -58,9 +60,7 @@ export class UsersRepository {
   async create(data: CreateUserDTO) {
     const user = await this.prisma.user.create({
       data: {
-        email: data.email,
-        password: data.password,
-        name: data.name,
+        ...data,
       },
     });
 
@@ -79,6 +79,7 @@ export class UsersRepository {
 
     return user;
   }
+
   async delete(id: number) {
     await this.prisma.user.delete({
       where: {

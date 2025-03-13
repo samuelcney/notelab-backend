@@ -7,6 +7,7 @@ const CreateUserSchema = z.object({
   password: z
     .string()
     .min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
+  role: z.enum(['ADMIN', 'STUDENT', 'INSTRUCTOR']).optional(),
 });
 
 export class CreateUserDTO extends createZodDto(CreateUserSchema) {}

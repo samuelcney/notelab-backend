@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UsePipes,
 } from '@nestjs/common';
@@ -36,6 +37,15 @@ export class UsersController {
   @UsePipes(ZodValidationPipe)
   createUser(@Body() data: CreateUserDTO) {
     return this.usersService.createUser(data);
+  }
+
+  @Put('/:id')
+  @UsePipes(ZodValidationPipe)
+  updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: CreateUserDTO,
+  ) {
+    return this.usersService.updateUser(Number(id), data);
   }
 
   @Delete('/:id')
