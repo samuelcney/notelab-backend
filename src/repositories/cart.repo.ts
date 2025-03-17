@@ -6,7 +6,7 @@ export class CartRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCartByUserId(userId: number) {
-    return this.prisma.cart.findFirst({
+    return await this.prisma.cart.findFirst({
       where: {
         userId,
       },
@@ -16,8 +16,19 @@ export class CartRepository {
     });
   }
 
+  async getTotalCartValue(cartId: number) {
+    return await this.prisma.cartItem.findMany({
+      where: {
+        cartId,
+      },
+      select: {
+        totalValue: true,
+      },
+    });
+  }
+
   async addItemToCart(cartId: number, courseId: number, totalValue: number) {
-    return this.prisma.cartItem.create({
+    return await this.prisma.cartItem.create({
       data: {
         cartId,
         courseId,
@@ -27,13 +38,13 @@ export class CartRepository {
   }
 
   async removeItemFromCart(cartItemId: number) {
-    return this.prisma.cartItem.delete({
+    return await this.prisma.cartItem.delete({
       where: { id: cartItemId },
     });
   }
 
   async clearCart(cartId: number) {
-    return this.prisma.cartItem.deleteMany({
+    return await this.prisma.cartItem.deleteMany({
       where: { cartId },
     });
   }

@@ -10,7 +10,11 @@ export class CartService {
   ) {}
 
   async getCartByUserId(id: number) {
-    return this.cartRepository.getCartByUserId(id);
+    return await this.cartRepository.getCartByUserId(id);
+  }
+
+  async getCartTotalByUserId(id: number) {
+    return await this.cartRepository.getTotalCartValue(id);
   }
 
   async addProductToCart(cartId: number, courseId: number, totalValue: number) {
@@ -22,14 +26,18 @@ export class CartService {
       );
     }
 
-    return this.cartRepository.addItemToCart(cartId, courseId, totalValue);
+    return await this.cartRepository.addItemToCart(
+      cartId,
+      courseId,
+      totalValue,
+    );
   }
 
   async removeProductFromCart(courseId: number) {
-    return this.cartRepository.removeItemFromCart(courseId);
+    return await this.cartRepository.removeItemFromCart(courseId);
   }
 
   async clearCart(cartId: number) {
-    return this.cartRepository.clearCart(cartId);
+    return await this.cartRepository.clearCart(cartId);
   }
 }
