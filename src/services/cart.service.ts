@@ -1,24 +1,36 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CartRepository } from 'src/repositories/cart.repo';
-import { CoursesRepository } from 'src/repositories/course.repo';
+import { CoursesService } from './course.service';
 
 @Injectable()
 export class CartService {
   constructor(
     private readonly cartRepository: CartRepository,
-    private readonly courseRepository: CoursesRepository,
+    private readonly courseService: CoursesService,
   ) {}
 
   async getCartByUserId(id: number) {
-    return await this.cartRepository.getCartByUserId(id);
+    const cart = await this.cartRepository.getCartByUserId(id);
+
+    if (!cart) {
+      throw new NotFoundException(
+        `O carrinho com o ID ${id} nao foi encontrado`,
+      );
+    }
   }
 
   async getCartTotalByUserId(id: number) {
-    return await this.cartRepository.getTotalCartValue(id);
+    const cart = await this.cartRepository.getTotalCartValue(id);
+
+    if (!cart) {
+      throw new NotFoundException(
+        `O carrinho com o ID ${id} nao foi encontrado`,
+      );
+    }
   }
 
   async addProductToCart(cartId: number, courseId: number, totalValue: number) {
-    const course = await this.courseRepository.findById(courseId);
+    const course = await this.courseService.getCourseById(courseId);
 
     if (!course) {
       throw new NotFoundException(
@@ -34,7 +46,14 @@ export class CartService {
   }
 
   async removeProductFromCart(courseId: number) {
-    return await this.cartRepository.removeItemFromCart(courseId);
+    const courseToRemove =
+      await this.cartRepository.removeItemFromCart(courseId);
+
+    if (!courseToRemove) {
+      throw new NotFoundException(
+        `O curso com o ID ${courseId} não foi encontrado`,
+      );
+    }
   }
 
   async clearCart(cartId: number) {

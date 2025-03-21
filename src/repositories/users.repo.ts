@@ -49,7 +49,14 @@ export class UsersRepository {
       where: {
         id,
       },
-      select: this.userSelect,
+      select: {
+        ...this.userSelect,
+        Cart: {
+          include: {
+            cartItems: true,
+          },
+        },
+      },
     });
 
     if (!user) return null;

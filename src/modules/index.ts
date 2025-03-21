@@ -1,0 +1,10 @@
+export { PrismaModule } from './prisma.module';
+export { UsersModule } from './users.module';
+export { CoursesModule } from './course.module';
+export { CategoryModule } from './categories.module';
+export { ChapterModule } from './chapter.module';
+export { LessonModule } from './lesson.module';
+export { EnrollmentModule } from './enrollment.module';
+export { ApproveRequestModule } from './approve-request.module';
+export { CartModule } from './cart.module';
+export { AuthModule } from './auth.module';
