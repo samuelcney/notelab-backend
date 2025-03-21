@@ -45,7 +45,7 @@ model User {
   isApprovedAccount Boolean @default(false)
   isActiveUser Boolean @default(true)
   
-  Cart Cart[]
+  cart Cart[] 
   courses Course[]
   enrollments Enrollment[]
   
@@ -91,7 +91,7 @@ model Course {
   
   categories CourseCategory[]
   enrollment Enrollment[]
-  CartItem   CartItem[]
+  cartItem   CartItem[]
   
   @@map("courses")  
 }

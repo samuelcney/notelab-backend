@@ -51,7 +51,7 @@ export class UsersRepository {
       },
       select: {
         ...this.userSelect,
-        Cart: {
+        cart: {
           include: {
             cartItems: true,
           },
@@ -68,7 +68,7 @@ export class UsersRepository {
     const user = await this.prisma.user.create({
       data: {
         ...data,
-        Cart: { create: {} },
+        cart: { create: {} },
       },
     });
 
