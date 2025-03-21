@@ -21,4 +21,4 @@ services:
     environment:
       - NODE_ENV=test
       - DATABASE_URL=postgres://postgres:datapostgres@postgres:5432/tcc-music
-    command: ['npm', 'run', 'test:e2e']
+    command: ['yarn', 'run', 'test:e2e']
