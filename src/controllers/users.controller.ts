@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { ZodValidationPipe } from 'nestjs-zod';
-import { CreateUserDTO } from 'src/common/dtos/create-user.dto';
+import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
 import { UsersService } from 'src/services/users.service';
 
 @Controller('users')

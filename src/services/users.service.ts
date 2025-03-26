@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
-import { CreateUserDTO } from '../common/dtos/create-user.dto';
+import { CreateUserDTO } from '../common/classes/dtos/create-user.dto';
 import { formatDate } from 'src/utils/dateFormatter';
 import { UsersRepository } from 'src/repositories/users.repo';
 

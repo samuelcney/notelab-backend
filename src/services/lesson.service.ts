@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDTO } from '../common/dtos/create-lesson.dto';
+import { CreateLessonDTO } from '../common/classes/dtos/create-lesson.dto';
 import { ChapterService } from 'src/services/chapter.service';
 import { LessonsRepository } from 'src/repositories/lesson.repo';
 

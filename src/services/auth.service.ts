@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { configDotenv } from 'dotenv';
-import { LoginDTO } from 'src/common/dtos/login.dto';
+import { LoginDTO } from 'src/common/classes/dtos/login.dto';
 
 configDotenv();
 
