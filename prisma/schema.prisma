@@ -33,129 +33,127 @@ enum MaterialType {
   VIDEO
 }
 
+
 model User {
-  id          String       @id @default(uuid())
-  email       String    @unique
-  name        String
-  role        Role      @default(STUDENT)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  
-  approvedRequest ApproveInstructorRequest?
-  isApprovedAccount Boolean @default(false)
-  isActiveUser Boolean @default(true)
-  
-  cart Cart[] 
-  courses Course[]
-  enrollments Enrollment[]
-  
+  id                String                    @id @default(uuid())
+  email             String                    @unique
+  name              String
+  role              Role                      @default(STUDENT)
+  createdAt         DateTime                  @default(now()) @map("created_at")
+  updatedAt         DateTime                  @updatedAt @map("updated_at")
+  isActiveUser      Boolean                   @default(true)
+  isApprovedAccount Boolean                   @default(false)
+  approvedRequest   ApproveInstructorRequest?
+  cart              Cart[]
+  courses           Course[]
+  enrollments       Enrollment[]
+
   @@map("users")
 }
 
 model ApproveInstructorRequest {
-  id          Int       @id @default(autoincrement())
-  userId      String       @unique
-  user        User      @relation(fields: [userId], references: [id])
-  status      RequestStatus    @default(PENDING)
+  id          Int           @id @default(autoincrement())
+  userId      String        @unique
+  status      RequestStatus @default(PENDING)
+  createdAt   DateTime      @default(now()) @map("created_at")
   certificate String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  approvedAt  DateTime? @map("approved_at")
-  rejectedAt  DateTime? @map("rejected_at")
-  
+  approvedAt  DateTime?     @map("approved_at")
+  rejectedAt  DateTime?     @map("rejected_at")
+  user        User          @relation(fields: [userId], references: [id])
+
   @@map("approve_request")
 }
 
 model Enrollment {
-  id          Int       @id @default(autoincrement())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  courseId    Int
-  course      Course    @relation(fields: [courseId], references: [id])
-  createdAt   DateTime  @default(now()) @map("created_at")
-  isActive    Boolean   @default(true)
+  id        Int      @id @default(autoincrement())
+  userId    String
+  courseId  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  isActive  Boolean  @default(true)
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("enrollments")
 }
 
 model Course {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  price       Float     @default(0)
-  difficulty  Difficulty
+  id           Int              @id @default(autoincrement())
+  name         String
+  description  String
+  price        Float            @default(0)
+  difficulty   Difficulty
   instructorId String
-  instructor   User   @relation(fields: [instructorId], references: [id])
-  modules     Module[]
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  
-  categories CourseCategory[]
-  enrollment Enrollment[]
-  cartItem   CartItem[]
-  
-  @@map("courses")  
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  cartItem     CartItem[]
+  categories   CourseCategory[]
+  instructor   User             @relation(fields: [instructorId], references: [id])
+  enrollment   Enrollment[]
+  modules      Module[]
+
+  @@map("courses")
 }
 
 model CourseCategory {
   courseId   Int
   categoryId Int
-  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   @@id([courseId, categoryId])
   @@map("course_categories")
 }
 
 model Category {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
+  id      Int              @id @default(autoincrement())
+  name    String           @unique
   courses CourseCategory[]
-  
+
   @@map("categories")
 }
 
 model Module {
-  id       Int      @id @default(autoincrement())
-  name     String
-  courseId Int
-  course   Course  @relation(fields: [courseId], references: [id])
-  lessons  Lesson[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  courseId  Int
   createdAt DateTime @default(now()) @map("created_at")
-  
+  lessons   Lesson[]
+  course    Course   @relation(fields: [courseId], references: [id])
+
   @@map("modules")
 }
 
 model Lesson {
-  id       Int      @id @default(autoincrement())
-  title    String
-  content  String?
-  moduleId Int
-  module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  type     MaterialType
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-  
+  id        Int          @id @default(autoincrement())
+  title     String
+  content   String?
+  moduleId  Int
+  createdAt DateTime     @default(now()) @map("created_at")
+  type      MaterialType
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  module    Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
   @@map("lessons")
 }
 
 model Cart {
-  id          Int         @id @default(autoincrement())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  cartItems   CartItem[] 
+  id        Int        @id @default(autoincrement())
+  userId    String
+  cartItems CartItem[]
+  user      User       @relation(fields: [userId], references: [id])
 
   @@map("carts")
 }
 
 model CartItem {
-  id          Int       @id @default(autoincrement())
-  cartId      Int
-  cart        Cart      @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  courseId    Int
-  course      Course    @relation(fields: [courseId], references: [id])
-  totalValue  Float
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id         Int      @id @default(autoincrement())
+  cartId     Int
+  courseId   Int
+  totalValue Float
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id])
 
   @@map("cart_items")
 }
