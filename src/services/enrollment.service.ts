@@ -25,7 +25,7 @@ export class EnrollmentService {
     return this.enrollmentRepository.findAllByCourseId(courseId);
   }
 
-  async getAllEnrollmentsByUserId(userId: number) {
+  async getAllEnrollmentsByUserId(userId: string) {
     await this.usersService.getUserById(userId);
 
     return this.enrollmentRepository.findAllByUserId(userId);

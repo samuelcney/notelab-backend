@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import * as bcrypt from 'bcrypt';
 import { CreateUserDTO } from '../common/classes/dtos/create-user.dto';
 import { formatDate } from 'src/utils/dateFormatter';
 import { UsersRepository } from 'src/repositories/users.repo';
@@ -40,7 +39,7 @@ export class UsersService {
     };
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: string) {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
@@ -59,38 +58,27 @@ export class UsersService {
   async createUser(data: CreateUserDTO) {
     try {
       const existingUser = await this.usersRepository.findByEmail(data.email);
-
       if (existingUser) {
         throw new ConflictException('O e-mail inserido já está cadastrado');
       }
 
-      const hashPassword = bcrypt.hashSync(data.password, 10);
-
-      const user = await this.usersRepository.create({
-        ...data,
-        password: hashPassword,
-      });
+      const user = await this.usersRepository.create({ ...data, id: data.id });
 
       return {
         ...user,
         createdAt: formatDate(user.createdAt),
         updatedAt: formatDate(user.updatedAt),
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error('Erro ao criar usuário:', error);
-
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-
       throw new InternalServerErrorException(
         'Erro inesperado ao criar usuário',
       );
     }
   }
 
-  async updateUser(id: number, data: CreateUserDTO) {
-    const userExist = this.usersRepository.findById(id);
+  async updateUser(id: string, data: CreateUserDTO) {
+    const userExist = await this.usersRepository.findById(id);
 
     if (!userExist) {
       throw new NotFoundException(
@@ -98,11 +86,11 @@ export class UsersService {
       );
     }
 
-    return await this.usersRepository.update(id, data);
+    return this.usersRepository.update(id, data);
   }
 
-  async deleteUser(id: number) {
-    const userExist = this.usersRepository.findById(id);
+  async deleteUser(id: string) {
+    const userExist = await this.usersRepository.findById(id);
 
     if (!userExist) {
       throw new NotFoundException(
@@ -110,6 +98,6 @@ export class UsersService {
       );
     }
 
-    return await this.usersRepository.delete(id);
+    return this.usersRepository.delete(id);
   }
 }

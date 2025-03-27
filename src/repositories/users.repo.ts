@@ -35,7 +35,6 @@ export class UsersRepository {
         role: true,
         createdAt: true,
         updatedAt: true,
-        password: true,
       },
     });
 
@@ -44,7 +43,7 @@ export class UsersRepository {
     return user;
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
@@ -67,16 +66,17 @@ export class UsersRepository {
   async create(data: CreateUserDTO) {
     const user = await this.prisma.user.create({
       data: {
-        ...data,
+        id: data.id,
+        name: data.name,
+        email: data.email,
         cart: { create: {} },
       },
     });
 
-    const { password, ...userResponse } = user;
-    return userResponse;
+    return user;
   }
 
-  async update(id: number, data: Partial<CreateUserDTO>) {
+  async update(id: string, data: Partial<CreateUserDTO>) {
     const user = await this.prisma.user.update({
       where: { id },
       data: {
@@ -88,7 +88,7 @@ export class UsersRepository {
     return user;
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     await this.prisma.user.delete({
       where: {
         id,

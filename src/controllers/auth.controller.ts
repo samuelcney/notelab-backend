@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import { ZodValidationPipe } from 'nestjs-zod';
+import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
 import { LoginDTO } from 'src/common/classes/dtos/login.dto';
 import { AuthService } from 'src/services/auth.service';
 
@@ -8,6 +10,12 @@ export class AuthController {
 
   @Post('login')
   login(@Body() data: LoginDTO) {
-    return this.authService.login(data);
+    return this.authService.signIn(data);
+  }
+
+  @Post('register')
+  @UsePipes(ZodValidationPipe)
+  createUser(@Body() data: CreateUserDTO) {
+    return this.authService.signUp(data);
   }
 }

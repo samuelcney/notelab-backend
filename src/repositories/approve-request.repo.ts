@@ -33,7 +33,7 @@ export class ApproveRequestRepository {
     });
   }
 
-  async findByUserId(userId: number) {
+  async findByUserId(userId: string) {
     return await this.prisma.approveInstructorRequest.findUnique({
       where: { userId: userId },
       include: {
@@ -53,7 +53,7 @@ export class ApproveRequestRepository {
     });
   }
 
-  async approveRequest(requestId: number, userId: number, status: boolean) {
+  async approveRequest(requestId: number, userId: string, status: boolean) {
     await this.prisma.$transaction([
       this.prisma.approveInstructorRequest.update({
         where: { id: requestId },

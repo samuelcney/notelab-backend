@@ -9,12 +9,12 @@ export class CartService {
     private readonly courseService: CoursesService,
   ) {}
 
-  async getCartByUserId(id: number) {
-    const cart = await this.cartRepository.getCartByUserId(id);
+  async getCartByUserId(userId: string) {
+    const cart = await this.cartRepository.getCartByUserId(userId);
 
     if (!cart) {
       throw new NotFoundException(
-        `O carrinho com o ID ${id} nao foi encontrado`,
+        `O carrinho com o ID ${userId} nao foi encontrado`,
       );
     }
   }

@@ -69,7 +69,7 @@ export class EnrollmentRepository {
     });
   }
 
-  async findAllByUserId(userId: number) {
+  async findAllByUserId(userId: string) {
     return await this.prisma.enrollment.findMany({
       where: {
         userId,

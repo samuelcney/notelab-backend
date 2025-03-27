@@ -16,8 +16,8 @@ export class EnrollmentController {
   }
 
   @Get('/user/:id')
-  getAllEnrollmentsByUserId(@Param('id') id: number) {
-    return this.enrollmentService.getAllEnrollmentsByUserId(Number(id));
+  getAllEnrollmentsByUserId(@Param('id') id: string) {
+    return this.enrollmentService.getAllEnrollmentsByUserId(id);
   }
 
   @Post()

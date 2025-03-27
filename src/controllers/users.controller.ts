@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Post,
   Put,
   Query,
   UsePipes,
@@ -25,8 +24,8 @@ export class UsersController {
   }
 
   @Get('/:id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getUserById(Number(id));
+  getUserById(@Param('id', ParseIntPipe) id: string) {
+    return this.usersService.getUserById(id);
   }
 
   @Get('/email')
@@ -34,23 +33,17 @@ export class UsersController {
     return this.usersService.getUserByEmail(email);
   }
 
-  @Post()
-  @UsePipes(ZodValidationPipe)
-  createUser(@Body() data: CreateUserDTO) {
-    return this.usersService.createUser(data);
-  }
-
   @Put('/:id')
   @UsePipes(ZodValidationPipe)
   updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: string,
     @Body() data: CreateUserDTO,
   ) {
-    return this.usersService.updateUser(Number(id), data);
+    return this.usersService.updateUser(id, data);
   }
 
   @Delete('/:id')
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.deleteUser(Number(id));
+  deleteUser(@Param('id', ParseIntPipe) id: string) {
+    return this.usersService.deleteUser(id);
   }
 }

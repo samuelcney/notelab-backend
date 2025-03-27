@@ -1,9 +1,13 @@
 import { UsersService } from 'src/services/users.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { configDotenv } from 'dotenv';
 import { LoginDTO } from 'src/common/classes/dtos/login.dto';
+import { supabase } from 'src/database/supabase';
+import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
 
 configDotenv();
 
@@ -11,32 +15,61 @@ configDotenv();
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
-  async login(data: LoginDTO) {
-    const userExist = await this.usersService
-      .getUserByEmail(data.email)
-      .catch(() => null);
-
-    if (!userExist) {
-      throw new UnauthorizedException({ message: 'Credenciais Inválidas' });
-    }
-
-    const passwordMatch = await bcrypt.compare(
-      data.password,
-      userExist.password,
-    );
-
-    if (!passwordMatch) {
-      throw new UnauthorizedException({ message: 'Credenciais Inválidas' });
-    }
-
-    const token = jwt.sign({ id: userExist.id }, process.env.SECRET, {
-      expiresIn: 2,
+  async signIn(data: LoginDTO) {
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
     });
 
+    if (error) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
     return {
-      statusCode: 200,
-      message: 'Login realizado com sucesso!',
-      token,
+      status: 200,
+      message: 'Login realizado com sucesso',
+      token: authData.session.access_token,
     };
+  }
+
+  async signUp(data: CreateUserDTO) {
+    try {
+      const { data: userData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        if (error?.message === 'User already exists') {
+          throw new UnauthorizedException(
+            'O email inserido já está cadastrado',
+          );
+        }
+        throw new InternalServerErrorException(error);
+      }
+
+      if (!userData.user?.id) {
+        throw new InternalServerErrorException(
+          'Erro ao obter ID do usuário criado',
+        );
+      }
+
+      const user = await this.usersService.createUser({
+        ...data,
+        id: userData.user.id,
+      });
+      return {
+        status: 201,
+        message: 'Usuário criado com sucesso',
+        user,
+      };
+    } catch (error) {
+      console.error('Erro no signUp:', error);
+      throw new InternalServerErrorException('Erro ao registrar usuário');
+    }
+  }
+
+  async logout() {
+    await supabase.auth.signOut();
   }
 }

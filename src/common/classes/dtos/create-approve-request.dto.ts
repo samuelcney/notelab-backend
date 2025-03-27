@@ -1,4 +1,4 @@
 interface CreateApproveRequestDTO {
-  userId: number;
+  userId: string;
   certificate: string;
 }

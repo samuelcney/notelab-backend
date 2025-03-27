@@ -5,7 +5,7 @@ import { PrismaService } from 'src/services/prisma.service';
 export class CartRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getCartByUserId(userId: number) {
+  async getCartByUserId(userId: string) {
     return await this.prisma.cart.findFirst({
       where: {
         userId,
