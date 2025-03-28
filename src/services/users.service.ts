@@ -77,16 +77,16 @@ export class UsersService {
     }
   }
 
-  async updateUser(id: string, data: CreateUserDTO) {
-    const userExist = await this.usersRepository.findById(id);
+  async updateUser(data: Partial<CreateUserDTO>) {
+    const userExist = await this.usersRepository.findById(data.id ?? '');
 
     if (!userExist) {
       throw new NotFoundException(
-        `O usuário com o ID ${id} não foi encontrado`,
+        `O usuário com o ID ${data.id} não foi encontrado`,
       );
     }
 
-    return this.usersRepository.update(id, data);
+    return this.usersRepository.update(data);
   }
 
   async deleteUser(id: string) {

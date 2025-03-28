@@ -76,11 +76,13 @@ export class UsersRepository {
     return user;
   }
 
-  async update(id: string, data: Partial<CreateUserDTO>) {
+  async update(data: Partial<CreateUserDTO>) {
     const user = await this.prisma.user.update({
-      where: { id },
+      where: { id: data.id },
       data: {
-        ...data,
+        name: data.name,
+        email: data.email,
+        role: data.role,
       },
       select: this.userSelect,
     });

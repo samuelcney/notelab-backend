@@ -33,17 +33,14 @@ export class UsersController {
     return this.usersService.getUserByEmail(email);
   }
 
-  @Put('/:id')
+  @Put()
   @UsePipes(ZodValidationPipe)
-  updateUser(
-    @Param('id', ParseIntPipe) id: string,
-    @Body() data: CreateUserDTO,
-  ) {
-    return this.usersService.updateUser(id, data);
+  updateUser(@Body() data: Partial<CreateUserDTO>) {
+    return this.usersService.updateUser(data);
   }
 
-  @Delete('/:id')
-  deleteUser(@Param('id', ParseIntPipe) id: string) {
+  @Delete()
+  deleteUser(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
   }
 }
