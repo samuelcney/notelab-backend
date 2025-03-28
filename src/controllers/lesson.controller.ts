@@ -7,12 +7,12 @@ export class LessonController {
   constructor(private readonly lessonService: LessonsService) {}
 
   @Get()
-  getAllModules() {
+  getAllLessons() {
     return this.lessonService.getAllLessons();
   }
 
   @Get('/:id')
-  getModuleById(@Param('id') id: number) {
+  getLessonById(@Param('id') id: number) {
     return this.lessonService.getLessonById(Number(id));
   }
 
