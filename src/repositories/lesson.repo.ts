@@ -27,6 +27,7 @@ export class LessonsRepository {
       where: {
         moduleId,
       },
+      orderBy: { id: 'asc' },
     });
   }
 
