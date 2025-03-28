@@ -11,6 +11,7 @@ export class LessonsRepository {
       include: {
         module: true,
       },
+      orderBy: { id: 'asc' },
     });
   }
 

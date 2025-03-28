@@ -56,7 +56,9 @@ export class CoursesRepository {
             id: true,
             name: true,
             createdAt: true,
-            lessons: true,
+            lessons: {
+              orderBy: { id: 'asc' },
+            },
           },
         },
       },
