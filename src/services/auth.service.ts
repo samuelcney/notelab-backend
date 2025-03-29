@@ -37,11 +37,16 @@ export class AuthService {
       const { data: userData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          data: {
+            name: data.name,
+          },
+        },
       });
 
       if (error) {
-        if (error?.message === 'User already exists') {
-          throw new UnauthorizedException(
+        if (error.message === 'User already registered') {
+          throw new InternalServerErrorException(
             'O email inserido já está cadastrado',
           );
         }
@@ -64,8 +69,7 @@ export class AuthService {
         user,
       };
     } catch (error) {
-      console.error('Erro no signUp:', error);
-      throw new InternalServerErrorException('Erro ao registrar usuário');
+      throw new InternalServerErrorException(error);
     }
   }
 
