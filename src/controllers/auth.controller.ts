@@ -18,4 +18,10 @@ export class AuthController {
   createUser(@Body() data: CreateUserDTO) {
     return this.authService.signUp(data);
   }
+
+  @Post('logout')
+  async logout() {
+    await this.authService.logout();
+    return { message: 'Logout realizado com sucesso' };
+  }
 }

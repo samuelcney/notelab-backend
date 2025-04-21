@@ -9,6 +9,7 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 
 import { ZodValidationPipe } from 'nestjs-zod';
 import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
@@ -37,6 +38,11 @@ export class UsersController {
   @UsePipes(ZodValidationPipe)
   updateUser(@Body() data: Partial<CreateUserDTO>) {
     return this.usersService.updateUser(data);
+  }
+
+  @Put('/update-role')
+  updateUserRole(@Body() data: { id: string; newRole: Role }) {
+    return this.usersService.updateRole(data.id, data.newRole);
   }
 
   @Delete()

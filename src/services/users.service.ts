@@ -2,12 +2,15 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 
 import { CreateUserDTO } from '../common/classes/dtos/create-user.dto';
 import { formatDate } from 'src/utils/dateFormatter';
 import { UsersRepository } from 'src/repositories/users.repo';
+import { supabaseAdmin } from 'src/database/supabase';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -70,7 +73,7 @@ export class UsersService {
         updatedAt: formatDate(user.updatedAt),
       };
     } catch (error) {
-      console.error('Erro ao criar usuário:', error);
+      Logger.error('Erro ao criar usuário:', error);
       throw new InternalServerErrorException(
         'Erro inesperado ao criar usuário',
       );
@@ -87,6 +90,26 @@ export class UsersService {
     }
 
     return this.usersRepository.update(data);
+  }
+
+  async updateRole(userId: string, newRole: Role) {
+    const { error: claimsError } =
+      await supabaseAdmin.auth.admin.updateUserById(userId, {
+        app_metadata: {
+          role: newRole,
+        },
+      });
+
+    if (claimsError) {
+      Logger.error('Erro ao atualizar role no Supabase:', claimsError);
+      throw new InternalServerErrorException(
+        'Erro ao atualizar role no Supabase',
+      );
+    }
+
+    await this.usersRepository.updateUserRole(userId, newRole);
+
+    return { message: 'Role atualizada com sucesso' };
   }
 
   async deleteUser(id: string) {
