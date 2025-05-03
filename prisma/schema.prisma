@@ -33,7 +33,6 @@ enum MaterialType {
   VIDEO
 }
 
-
 model User {
   id                String                    @id @default(uuid())
   email             String                    @unique
@@ -90,6 +89,9 @@ model Course {
   instructor   User             @relation(fields: [instructorId], references: [id])
   enrollment   Enrollment[]
   modules      Module[]
+  issueCertificate   Boolean  @default(false)
+  workload           String?
+  coverImage         String?
 
   @@map("courses")
 }
