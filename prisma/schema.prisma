@@ -3,34 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-}
-
-enum Role {
-  STUDENT
-  INSTRUCTOR
-  ADMIN
-}
-
-enum Difficulty {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-}
-
-enum RequestStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum MaterialType {
-  QUIZ
-  TEXT
-  PDF
-  VIDEO
 }
 
 model User {
@@ -46,8 +21,20 @@ model User {
   cart              Cart[]
   courses           Course[]
   enrollments       Enrollment[]
+  userBio           UserBio?
 
   @@map("users")
+}
+
+model UserBio {
+  id        Int     @id @default(autoincrement())
+  userId    String  @unique
+  bio       String?
+  phone     String?
+  avatarUrl String?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_bio")
 }
 
 model ApproveInstructorRequest {
@@ -76,22 +63,21 @@ model Enrollment {
 }
 
 model Course {
-  id           Int              @id @default(autoincrement())
-  name         String
-  description  String
-  price        Float            @default(0)
-  difficulty   Difficulty
-  instructorId String
-  createdAt    DateTime         @default(now()) @map("created_at")
-  updatedAt    DateTime         @updatedAt @map("updated_at")
-  cartItem     CartItem[]
-  categories   CourseCategory[]
-  instructor   User             @relation(fields: [instructorId], references: [id])
-  enrollment   Enrollment[]
-  modules      Module[]
-  issueCertificate   Boolean  @default(false)
-  workload           String?
-  coverImage         String?
+  id               Int              @id @default(autoincrement())
+  name             String
+  description      String
+  price            Float            @default(0)
+  difficulty       Difficulty
+  instructorId     String
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  coverImage       String?
+  issueCertificate Boolean          @default(false)
+  cartItem         CartItem[]
+  categories       CourseCategory[]
+  instructor       User             @relation(fields: [instructorId], references: [id])
+  enrollment       Enrollment[]
+  modules          Module[]
 
   @@map("courses")
 }
@@ -158,4 +144,29 @@ model CartItem {
   course     Course   @relation(fields: [courseId], references: [id])
 
   @@map("cart_items")
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MaterialType {
+  QUIZ
+  TEXT
+  PDF
+  VIDEO
 }
