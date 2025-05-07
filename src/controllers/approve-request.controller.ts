@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateApproveRequestDTO } from 'src/common/classes/dtos/create-approve-request.dto';
 import { ApproveRequestService } from '../services/approve-request.service';
 
 @Controller('/approve-requests')

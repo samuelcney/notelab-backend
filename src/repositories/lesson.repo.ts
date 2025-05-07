@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CreateLessonDTO } from 'src/common/classes/schemas/create-lesson.dto';
 import { PrismaService } from 'src/services/prisma.service';
-import { CreateLessonDTO } from 'src/common/classes/dtos/create-lesson.dto';
 
 @Injectable()
 export class LessonsRepository {

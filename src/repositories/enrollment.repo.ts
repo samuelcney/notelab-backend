@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { PrismaService } from 'src/services/prisma.service';
 
 @Injectable()

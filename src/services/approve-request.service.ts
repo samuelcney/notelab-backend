@@ -1,4 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
+import { CreateApproveRequestDTO } from 'src/common/classes/dtos/create-approve-request.dto';
 import { ApproveRequestRepository } from '../repositories/approve-request.repo';
 
 @Injectable()

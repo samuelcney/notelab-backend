@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { CategoryDTO } from 'src/common/classes/dtos/create-category.dto';
 import { CategoryRepository } from '../repositories/categories.repo';
 
 @Injectable()

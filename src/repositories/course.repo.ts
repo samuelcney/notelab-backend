@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseDTO } from 'src/common/classes/dtos/create-course.dto';
+import { CreateCourseDTO } from 'src/common/classes/schemas/create-course.dto';
 import { PrismaService } from 'src/services/prisma.service';
 
 @Injectable()

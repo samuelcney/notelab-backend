@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDTO } from '../common/classes/dtos/create-lesson.dto';
-import { ChapterService } from 'src/services/chapter.service';
 import { LessonsRepository } from 'src/repositories/lesson.repo';
+import { ChapterService } from 'src/services/chapter.service';
+import { CreateLessonDTO } from '../common/classes/schemas/create-lesson.dto';
 
 @Injectable()
 export class LessonsService {

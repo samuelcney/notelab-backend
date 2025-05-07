@@ -12,7 +12,7 @@ import {
 import { Role } from '@prisma/client';
 
 import { ZodValidationPipe } from 'nestjs-zod';
-import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
+import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
 import { UsersService } from 'src/services/users.service';
 
 @Controller('users')

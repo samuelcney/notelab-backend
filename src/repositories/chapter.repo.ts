@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma.service';
-import { CreateModuleDTO } from '../common/classes/dtos/create-module.dto';
+import { CreateModuleDTO } from '../common/classes/schemas/create-module.dto';
 
 @Injectable()
 export class ChapterRepository {

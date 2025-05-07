@@ -1,4 +1,3 @@
-import { UsersService } from 'src/services/users.service';
 import {
   Injectable,
   InternalServerErrorException,
@@ -6,9 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { configDotenv } from 'dotenv';
-import { LoginDTO } from 'src/common/classes/dtos/login.dto';
+import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
+import { LoginDTO } from 'src/common/classes/schemas/login.dto';
 import { supabase, supabaseAdmin } from 'src/database/supabase';
-import { CreateUserDTO } from 'src/common/classes/dtos/create-user.dto';
+import { UsersService } from 'src/services/users.service';
 
 configDotenv();
 

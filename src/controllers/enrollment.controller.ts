@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { EnrollmentService } from '../services/enrollment.service';
 
 @Controller('/enrollment')

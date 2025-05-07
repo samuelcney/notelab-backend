@@ -6,11 +6,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { CreateUserDTO } from '../common/classes/dtos/create-user.dto';
-import { formatDate } from 'src/utils/dateFormatter';
-import { UsersRepository } from 'src/repositories/users.repo';
-import { supabaseAdmin } from 'src/database/supabase';
 import { Role } from '@prisma/client';
+import { supabaseAdmin } from 'src/database/supabase';
+import { UsersRepository } from 'src/repositories/users.repo';
+import { formatDate } from 'src/utils/dateFormatter';
+import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
 
 @Injectable()
 export class UsersService {

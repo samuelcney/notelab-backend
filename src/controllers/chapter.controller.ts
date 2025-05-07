@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateModuleDTO } from 'src/common/classes/dtos/create-module.dto';
+import { CreateModuleDTO } from 'src/common/classes/schemas/create-module.dto';
 import { ChapterService } from 'src/services/chapter.service';
 
 @Controller('modules')
