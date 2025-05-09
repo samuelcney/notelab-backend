@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 
 import { Role } from '@prisma/client';
+import { UpdateUserDTO } from 'src/common/classes/schemas/update-profile-info.dto';
 import { supabaseAdmin } from 'src/database/supabase';
 import { UsersRepository } from 'src/repositories/users.repo';
 import { formatDate } from 'src/utils/dateFormatter';
@@ -90,6 +91,18 @@ export class UsersService {
     }
 
     return this.usersRepository.update(data);
+  }
+
+  async updateUserProfile(userId: string, data: Partial<UpdateUserDTO>) {
+    const userExist = await this.usersRepository.findById(userId);
+
+    if (!userExist) {
+      throw new NotFoundException(
+        `O usuário com o ID ${userId} não foi encontrado`,
+      );
+    }
+
+    return this.usersRepository.updateProfileInfo(userExist.id, data);
   }
 
   async updateRole(userId: string, newRole: Role) {

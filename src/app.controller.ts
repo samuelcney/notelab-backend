@@ -1,12 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor() {}
 
-  @Get()
-  getAppInfoTest() {
-    return this.appService.getAppInfoTest();
+  @Get('/health-check')
+  GetHealthCheck() {
+    return {
+      statusCode: 200,
+      message: 'the server is operating correctly',
+    };
   }
 }

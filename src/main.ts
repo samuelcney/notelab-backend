@@ -1,13 +1,14 @@
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { configDotenv } from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { configDotenv } from 'dotenv';
+import { AppModule } from './app.module';
 
 configDotenv();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  Logger.log(`PATH: ${process.cwd()}`);
   app.setGlobalPrefix('v1');
 
   app.enableCors({

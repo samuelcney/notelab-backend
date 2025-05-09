@@ -4,18 +4,21 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Put,
   Query,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
 import { ZodValidationPipe } from 'nestjs-zod';
 import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
+import { UpdateUserDTO } from 'src/common/classes/schemas/update-profile-info.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { UsersService } from 'src/services/users.service';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -25,7 +28,7 @@ export class UsersController {
   }
 
   @Get('/:id')
-  getUserById(@Param('id', ParseIntPipe) id: string) {
+  getUserById(@Param('id') id: string) {
     return this.usersService.getUserById(id);
   }
 
@@ -34,10 +37,19 @@ export class UsersController {
     return this.usersService.getUserByEmail(email);
   }
 
-  @Put()
+  @Put('/update-user')
   @UsePipes(ZodValidationPipe)
   updateUser(@Body() data: Partial<CreateUserDTO>) {
     return this.usersService.updateUser(data);
+  }
+
+  @Put('/update-profile/:userId')
+  @UsePipes(ZodValidationPipe)
+  updateProfile(
+    @Body() data: Partial<UpdateUserDTO>,
+    @Param('userId') userId: string,
+  ) {
+    return this.usersService.updateUserProfile(userId, data);
   }
 
   @Put('/update-role')

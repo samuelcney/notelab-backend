@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
+import { UpdateUserDTO } from 'src/common/classes/schemas/update-profile-info.dto';
 import { PrismaService } from '../services/prisma.service';
 
 @Injectable()
@@ -71,6 +72,7 @@ export class UsersRepository {
         name: data.name,
         email: data.email,
         cart: { create: {} },
+        userBio: { create: {} },
       },
     });
 
@@ -84,6 +86,33 @@ export class UsersRepository {
         name: data.name,
         email: data.email,
         role: data.role,
+      },
+      select: this.userSelect,
+    });
+
+    return user;
+  }
+
+  async updateProfileInfo(userId: string, data: Partial<UpdateUserDTO>) {
+    const { name, bio, avatarUrl, phone } = data;
+
+    const bioData: any = {};
+    if (bio !== undefined) bioData.bio = bio;
+    if (avatarUrl !== undefined) bioData.avatarUrl = avatarUrl;
+    if (phone !== undefined) bioData.phone = phone;
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(Object.keys(bioData).length > 0 && {
+          userBio: {
+            upsert: {
+              update: bioData,
+              create: bioData,
+            },
+          },
+        }),
       },
       select: this.userSelect,
     });
