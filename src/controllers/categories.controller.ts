@@ -6,10 +6,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoryDTO } from 'src/common/classes/dtos/create-category.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CategoryService } from '../services/categories.service';
 
+@UseGuards(AuthGuard)
 @Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

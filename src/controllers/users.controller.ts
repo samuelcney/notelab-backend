@@ -4,11 +4,16 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Put,
   Query,
+  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from '@prisma/client';
 
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -27,6 +32,25 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
+  @Get('/info/me')
+  async getMe(@Req() req): Promise<any> {
+    const supabaseUser = req.user;
+    const dbUser = await this.usersService.getUserById(supabaseUser.id);
+
+    return {
+      id: supabaseUser.id,
+      email: supabaseUser.email,
+      role: supabaseUser.app_metadata?.role,
+      name: dbUser?.name,
+      createdAt: dbUser?.createdAt,
+      info: {
+        bio: dbUser?.userBio?.bio,
+        avatarUrl: dbUser?.userBio?.avatarUrl,
+        phone: dbUser?.userBio?.phone,
+      },
+    };
+  }
+
   @Get('/:id')
   getUserById(@Param('id') id: string) {
     return this.usersService.getUserById(id);
@@ -43,13 +67,14 @@ export class UsersController {
     return this.usersService.updateUser(data);
   }
 
-  @Put('/update-profile/:userId')
-  @UsePipes(ZodValidationPipe)
+  @Patch('/update-profile/:userId')
+  @UseInterceptors(FileInterceptor('avatar'))
   updateProfile(
     @Body() data: Partial<UpdateUserDTO>,
     @Param('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.updateUserProfile(userId, data);
+    return this.usersService.updateUserProfile(userId, data, file);
   }
 
   @Put('/update-role')

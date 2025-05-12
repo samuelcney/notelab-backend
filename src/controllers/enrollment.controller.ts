@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { EnrollmentService } from '../services/enrollment.service';
 
+@UseGuards(AuthGuard)
 @Controller('/enrollment')
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}

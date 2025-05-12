@@ -57,6 +57,13 @@ export class UsersRepository {
             cartItems: true,
           },
         },
+        userBio: {
+          select: {
+            bio: true,
+            avatarUrl: true,
+            phone: true,
+          },
+        },
       },
     });
 

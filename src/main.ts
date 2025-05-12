@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { configDotenv } from 'dotenv';
@@ -8,7 +7,6 @@ configDotenv();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  Logger.log(`PATH: ${process.cwd()}`);
   app.setGlobalPrefix('v1');
 
   app.enableCors({

@@ -3,18 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id                String                    @id @default(uuid())
   email             String                    @unique
   name              String
-  role              Role                      @default(STUDENT)
   createdAt         DateTime                  @default(now()) @map("created_at")
   updatedAt         DateTime                  @updatedAt @map("updated_at")
+  role              Role                      @default(STUDENT)
+  id                String                    @id @default(uuid())
   isActiveUser      Boolean                   @default(true)
   isApprovedAccount Boolean                   @default(false)
   approvedRequest   ApproveInstructorRequest?
@@ -42,8 +42,8 @@ model ApproveInstructorRequest {
   userId      String        @unique
   status      RequestStatus @default(PENDING)
   createdAt   DateTime      @default(now()) @map("created_at")
-  certificate String
   approvedAt  DateTime?     @map("approved_at")
+  certificate String
   rejectedAt  DateTime?     @map("rejected_at")
   user        User          @relation(fields: [userId], references: [id])
 

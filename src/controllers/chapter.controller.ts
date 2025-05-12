@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateModuleDTO } from 'src/common/classes/schemas/create-module.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ChapterService } from 'src/services/chapter.service';
 
+@UseGuards(AuthGuard)
 @Controller('modules')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}

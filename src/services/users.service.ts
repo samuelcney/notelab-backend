@@ -12,10 +12,14 @@ import { supabaseAdmin } from 'src/database/supabase';
 import { UsersRepository } from 'src/repositories/users.repo';
 import { formatDate } from 'src/utils/dateFormatter';
 import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
+import { SupabaseStorageService } from './supabase-s3.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly supabaseStorage: SupabaseStorageService,
+  ) {}
 
   async getAllUsers() {
     const users = await this.usersRepository.findAll();
@@ -93,13 +97,27 @@ export class UsersService {
     return this.usersRepository.update(data);
   }
 
-  async updateUserProfile(userId: string, data: Partial<UpdateUserDTO>) {
+  async updateUserProfile(
+    userId: string,
+    data: Partial<UpdateUserDTO>,
+    file?: Express.Multer.File,
+  ) {
     const userExist = await this.usersRepository.findById(userId);
 
     if (!userExist) {
       throw new NotFoundException(
         `O usuário com o ID ${userId} não foi encontrado`,
       );
+    }
+
+    if (file) {
+      const ext = file.originalname.split('.').pop();
+      const avatarUrl = await this.supabaseStorage.uploadAvatar(
+        userId,
+        file.buffer,
+        ext!,
+      );
+      data.avatarUrl = avatarUrl;
     }
 
     return this.usersRepository.updateProfileInfo(userExist.id, data);

@@ -5,7 +5,7 @@ export class AppController {
   constructor() {}
 
   @Get('/health-check')
-  GetHealthCheck() {
+  healthCheck() {
     return {
       statusCode: 200,
       message: 'the server is operating correctly',
