@@ -43,6 +43,7 @@ export class UsersController {
       role: supabaseUser.app_metadata?.role,
       name: dbUser?.name,
       createdAt: dbUser?.createdAt,
+      updatedAt: dbUser?.updatedAt,
       info: {
         bio: dbUser?.userBio?.bio,
         avatarUrl: dbUser?.userBio?.avatarUrl,
