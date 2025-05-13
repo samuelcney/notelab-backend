@@ -50,7 +50,7 @@ export class AuthService {
         });
 
       if (authError) {
-        Logger.log(authError, 'AuthError');
+        Logger.error(authError, 'AuthError');
         if (
           authError.message ===
           'A user with this email address has already been registered'
@@ -90,7 +90,7 @@ export class AuthService {
         });
 
       if (claimsError) {
-        console.error('Erro ao atualizar custom claims:', claimsError);
+        Logger.error('Erro ao atualizar custom claims:', claimsError);
         throw new InternalServerErrorException(
           'Erro ao definir a role do usuário',
         );
