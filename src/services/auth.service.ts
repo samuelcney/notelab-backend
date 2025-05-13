@@ -30,11 +30,6 @@ export class AuthService {
       status: 200,
       message: 'Login realizado com sucesso',
       token: authData.session.access_token,
-      user: {
-        id: authData.user.id,
-        email: authData.user.email,
-        role: authData.user.user_metadata?.role,
-      },
     };
   }
 
