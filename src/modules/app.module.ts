@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import {
   ApproveRequestModule,
   AuthModule,
@@ -11,7 +10,7 @@ import {
   LessonModule,
   PrismaModule,
   UsersModule,
-} from './modules/index';
+} from './index';
 
 @Module({
   imports: [
@@ -26,6 +25,5 @@ import {
     ApproveRequestModule,
     CartModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {}

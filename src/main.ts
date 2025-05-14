@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { configDotenv } from 'dotenv';
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app.module';
 
 configDotenv();
 
