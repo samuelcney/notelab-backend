@@ -44,7 +44,7 @@ export class UsersController {
       name: dbUser?.name,
       createdAt: dbUser?.createdAt,
       updatedAt: dbUser?.updatedAt,
-      info: {
+      userBio: {
         bio: dbUser?.userBio?.bio,
         avatarUrl: dbUser?.userBio?.avatarUrl,
         phone: dbUser?.userBio?.phone,

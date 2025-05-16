@@ -114,10 +114,10 @@ model Module {
 model Lesson {
   id        Int          @id @default(autoincrement())
   title     String
-  content   String?
+  videoUrl   String?
+  duration  Int
   moduleId  Int
   createdAt DateTime     @default(now()) @map("created_at")
-  type      MaterialType
   updatedAt DateTime     @updatedAt @map("updated_at")
   module    Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
@@ -164,9 +164,3 @@ enum RequestStatus {
   REJECTED
 }
 
-enum MaterialType {
-  QUIZ
-  TEXT
-  PDF
-  VIDEO
-}

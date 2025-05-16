@@ -36,8 +36,8 @@ export class LessonsRepository {
     const newLesson = await this.prisma.lesson.create({
       data: {
         title: data.title,
-        type: data.type,
-        content: data.content,
+        videoUrl: data.videoUrl,
+        duration: data.duration,
         moduleId: data.moduleId,
       },
       include: {

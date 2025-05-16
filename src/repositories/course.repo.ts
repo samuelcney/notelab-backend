@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateCourseDTO } from 'src/common/classes/schemas/create-course.dto';
 import { PrismaService } from 'src/services/prisma.service';
 
@@ -66,6 +66,7 @@ export class CoursesRepository {
   }
 
   async create(data: CreateCourseDTO) {
+    Logger.log('Creating course with data:', data);
     const newCourse = await this.prisma.course.create({
       data: {
         name: data.name,
@@ -73,16 +74,36 @@ export class CoursesRepository {
         price: data.price,
         difficulty: data.difficulty,
         instructorId: data.instructorId,
+        coverImage: data.coverImage,
+        issueCertificate: data.issueCertificate,
 
         categories: {
           create:
             data.categories?.map(category => ({
-              categoryId: category.categoryId,
+              categoryId: category,
             })) || [],
+        },
+
+        modules: {
+          create: data.modules.map(module => ({
+            name: module.title,
+            lessons: {
+              create: module.lessons.map(lesson => ({
+                title: lesson.title,
+                videoUrl: lesson.videoUrl,
+                duration: lesson.duration,
+              })),
+            },
+          })),
         },
       },
       include: {
         categories: true,
+        modules: {
+          include: {
+            lessons: true,
+          },
+        },
       },
     });
 
@@ -90,24 +111,57 @@ export class CoursesRepository {
   }
 
   async update(id: number, data: Partial<CreateCourseDTO>) {
-    return await this.prisma.course.update({
+    const updateData: any = {
+      ...Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined),
+      ),
+      categories: data.categories
+        ? {
+            deleteMany: {},
+            create: data.categories.map(category => ({
+              categoryId: category,
+            })),
+          }
+        : undefined,
+    };
+
+    if (data.modules) {
+      updateData.modules = {
+        deleteMany: {},
+        create: data.modules.map(module => ({
+          name: module.title,
+          lessons: {
+            create: module.lessons.map(lesson => ({
+              title: lesson.title,
+              videoUrl: lesson.videoUrl,
+              duration: lesson.duration,
+            })),
+          },
+        })),
+      };
+    }
+
+    const updatedCourse = await this.prisma.course.update({
       where: { id },
-      data: {
-        ...Object.fromEntries(
-          Object.entries(data).filter(([_, value]) => value !== undefined),
-        ),
-        categories: data.categories
-          ? {
-              deleteMany: {},
-              create: data.categories.map(category => ({
-                categoryId: category.categoryId,
-              })),
-            }
-          : undefined,
-      },
+      data: updateData,
       include: {
         categories: true,
+        modules: {
+          include: {
+            lessons: true,
+          },
+        },
       },
     });
+
+    return updatedCourse;
+  }
+
+  async findByInstructorId(instructorId: string) {
+    const courses = await this.prisma.course.findMany({
+      where: { instructorId },
+    });
+
+    return courses;
   }
 }

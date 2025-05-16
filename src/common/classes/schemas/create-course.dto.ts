@@ -8,15 +8,13 @@ const CreateCourseSchema = z.object({
   price: z.number().min(0, { message: 'Preço não pode ser negativo' }),
   difficulty: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
   instructorId: z.string(),
-  typeCourse: z.enum(['free', 'paid']),
   coverImage: z.string().url().nullable(),
   issueCertificate: z.boolean(),
-  categories: z.array(z.object({ categoryId: z.number() })).optional(),
+  categories: z.array(z.number()).optional(),
   modules: z
     .array(
       z.object({
         title: z.string().min(1),
-        description: z.string().min(1),
         lessons: z
           .array(
             z.object({

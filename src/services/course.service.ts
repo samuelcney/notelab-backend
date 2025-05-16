@@ -20,6 +20,19 @@ export class CoursesService {
     return existCourse;
   }
 
+  async getCourseByInstructorId(instructorId: string) {
+    const existCourse =
+      await this.coursesRepository.findByInstructorId(instructorId);
+
+    if (!existCourse) {
+      throw new NotFoundException(
+        `O curso com o ID do instrutor ${instructorId} não foi encontrado`,
+      );
+    }
+
+    return existCourse;
+  }
+
   async addCourse(data: CreateCourseDTO) {
     return await this.coursesRepository.create(data);
   }
