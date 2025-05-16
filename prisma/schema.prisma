@@ -112,14 +112,14 @@ model Module {
 }
 
 model Lesson {
-  id        Int          @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
-  videoUrl   String?
-  duration  Int
   moduleId  Int
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  module    Module       @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  duration  Int
+  videoUrl  String?
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@map("lessons")
 }
@@ -163,4 +163,3 @@ enum RequestStatus {
   APPROVED
   REJECTED
 }
-
