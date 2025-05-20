@@ -14,8 +14,8 @@ export class EnrollmentController {
   }
 
   @Get('/course/:id')
-  getAllEnrollmentsByCourseId(@Param('id') id: number) {
-    return this.enrollmentService.getAllEnrollmentsByCourseId(Number(id));
+  getAllEnrollmentsByCourseId(@Param('id') id: string) {
+    return this.enrollmentService.getAllEnrollmentsByCourseId(id);
   }
 
   @Get('/user/:id')

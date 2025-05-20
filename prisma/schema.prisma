@@ -51,9 +51,9 @@ model ApproveInstructorRequest {
 }
 
 model Enrollment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   userId    String
-  courseId  Int
+  courseId  String
   createdAt DateTime @default(now()) @map("created_at")
   isActive  Boolean  @default(true)
   course    Course   @relation(fields: [courseId], references: [id])
@@ -63,7 +63,7 @@ model Enrollment {
 }
 
 model Course {
-  id               Int              @id @default(autoincrement())
+  id               String           @id @default(uuid())
   name             String
   description      String
   price            Float            @default(0)
@@ -73,6 +73,7 @@ model Course {
   updatedAt        DateTime         @updatedAt @map("updated_at")
   coverImage       String?
   issueCertificate Boolean          @default(false)
+  isActiveCourse   Boolean          @default(true)
   cartItem         CartItem[]
   categories       CourseCategory[]
   instructor       User             @relation(fields: [instructorId], references: [id])
@@ -83,7 +84,7 @@ model Course {
 }
 
 model CourseCategory {
-  courseId   Int
+  courseId   String
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -101,20 +102,20 @@ model Category {
 }
 
 model Module {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
-  courseId  Int
+  courseId  String
   createdAt DateTime @default(now()) @map("created_at")
   lessons   Lesson[]
-  course    Course   @relation(fields: [courseId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("modules")
 }
 
 model Lesson {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   title     String
-  moduleId  Int
+  moduleId  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   duration  Int
@@ -136,12 +137,12 @@ model Cart {
 model CartItem {
   id         Int      @id @default(autoincrement())
   cartId     Int
-  courseId   Int
+  courseId   String
   totalValue Float
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
   cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  course     Course   @relation(fields: [courseId], references: [id])
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("cart_items")
 }

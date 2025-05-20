@@ -1,8 +1,8 @@
 export class EnrollmentDTO {
-  courseId: number;
+  courseId: string;
   userId: string;
 
-  constructor(courseId: number, userId: string) {
+  constructor(courseId: string, userId: string) {
     this.courseId = courseId;
     this.userId = userId;
   }

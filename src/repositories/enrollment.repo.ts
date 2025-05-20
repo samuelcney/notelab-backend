@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
-import { PrismaService } from 'src/services/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class EnrollmentRepository {
@@ -30,7 +30,7 @@ export class EnrollmentRepository {
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.prisma.enrollment.findUnique({
       where: {
         id,
@@ -50,7 +50,7 @@ export class EnrollmentRepository {
     });
   }
 
-  async findAllByCourseId(courseId: number) {
+  async findAllByCourseId(courseId: string) {
     return await this.prisma.enrollment.findMany({
       where: {
         courseId,

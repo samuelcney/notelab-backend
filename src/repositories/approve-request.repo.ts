@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateApproveRequestDTO } from 'src/common/classes/dtos/create-approve-request.dto';
-import { PrismaService } from 'src/services/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class ApproveRequestRepository {

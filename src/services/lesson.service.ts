@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { LessonsRepository } from 'src/repositories/lesson.repo';
-import { ChapterService } from 'src/services/chapter.service';
+import { ModuleService } from 'src/services/module.service';
 import { CreateLessonDTO } from '../common/classes/schemas/create-lesson.dto';
 
 @Injectable()
 export class LessonsService {
   constructor(
     private readonly lessonRepository: LessonsRepository,
-    private readonly chapterService: ChapterService,
+    private readonly chapterService: ModuleService,
   ) {}
 
   async getAllLessons() {
     return await this.lessonRepository.findAll();
   }
 
-  async getLessonById(id: number) {
+  async getLessonById(id: string) {
     return await this.lessonRepository.findById(id);
   }
 
-  async getLessonByModuleId(courseId: number) {
+  async getLessonByModuleId(courseId: string) {
     return await this.lessonRepository.findByModuleId(courseId);
   }
 

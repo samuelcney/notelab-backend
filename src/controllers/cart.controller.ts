@@ -27,7 +27,7 @@ export class CartController {
   @Post('/:cartId/add/:courseId/:totalValue')
   addProductToCart(
     @Param('cartId') cartId: number,
-    @Param('courseId') courseId: number,
+    @Param('courseId') courseId: string,
     @Param('totalValue') totalValue: number,
   ) {
     return this.cartService.addProductToCart(cartId, courseId, totalValue);

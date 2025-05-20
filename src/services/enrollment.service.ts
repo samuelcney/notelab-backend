@@ -16,11 +16,11 @@ export class EnrollmentService {
     return await this.enrollmentRepository.findAll();
   }
 
-  async getEnrollmentById(id: number) {
+  async getEnrollmentById(id: string) {
     return await this.enrollmentRepository.findById(id);
   }
 
-  async getAllEnrollmentsByCourseId(courseId: number) {
+  async getAllEnrollmentsByCourseId(courseId: string) {
     await this.courseService.getCourseById(courseId);
 
     return this.enrollmentRepository.findAllByCourseId(courseId);

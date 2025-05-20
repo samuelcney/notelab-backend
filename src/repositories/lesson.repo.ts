@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLessonDTO } from 'src/common/classes/schemas/create-lesson.dto';
-import { PrismaService } from 'src/services/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class LessonsRepository {
@@ -15,7 +15,7 @@ export class LessonsRepository {
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.prisma.lesson.findUnique({
       where: {
         id,
@@ -23,7 +23,7 @@ export class LessonsRepository {
     });
   }
 
-  async findByModuleId(moduleId: number) {
+  async findByModuleId(moduleId: string) {
     return await this.prisma.lesson.findMany({
       where: {
         moduleId,
@@ -48,7 +48,7 @@ export class LessonsRepository {
     return newLesson;
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await this.prisma.lesson.delete({
       where: {
         id,

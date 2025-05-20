@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/services/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class CartRepository {
@@ -27,7 +27,7 @@ export class CartRepository {
     });
   }
 
-  async addItemToCart(cartId: number, courseId: number, totalValue: number) {
+  async addItemToCart(cartId: number, courseId: string, totalValue: number) {
     return await this.prisma.cartItem.create({
       data: {
         cartId,

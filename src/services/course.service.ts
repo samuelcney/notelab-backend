@@ -10,7 +10,7 @@ export class CoursesService {
     return await this.coursesRepository.findAll();
   }
 
-  async getCourseById(id: number) {
+  async getCourseById(id: string) {
     const existCourse = await this.coursesRepository.findById(id);
 
     if (!existCourse) {
@@ -37,7 +37,23 @@ export class CoursesService {
     return await this.coursesRepository.create(data);
   }
 
-  async updateCourse(id: number, data: Partial<CreateCourseDTO>) {
+  async updateCourse(id: string, data: Partial<CreateCourseDTO>) {
+    const existCourse = await this.coursesRepository.findById(id);
+
+    if (!existCourse) {
+      throw new NotFoundException(`O curso com o ID ${id} não foi encontrado`);
+    }
+
     return await this.coursesRepository.update(id, data);
+  }
+
+  async deleteCourse(id: string) {
+    const existCourse = await this.coursesRepository.findById(id);
+
+    if (!existCourse) {
+      throw new NotFoundException(`O curso com o ID ${id} não foi encontrado`);
+    }
+
+    return await this.coursesRepository.delete(id);
   }
 }

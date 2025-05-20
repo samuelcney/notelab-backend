@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   InternalServerErrorException,
   Logger,
@@ -30,9 +31,9 @@ export class CoursesController {
   }
 
   @Get('/:id')
-  async getCourseById(@Param('id') id: number) {
+  async getCourseById(@Param('id') id: string) {
     try {
-      const course = await this.coursesService.getCourseById(Number(id));
+      const course = await this.coursesService.getCourseById(id);
       if (!course) {
         throw new NotFoundException('Curso não encontrado.');
       }
@@ -59,22 +60,38 @@ export class CoursesController {
   @Post()
   async addCourse(@Body() data: CreateCourseDTO) {
     try {
+      Logger.log(data, 'COURSE');
       return await this.coursesService.addCourse(data);
     } catch (error) {
+      Logger.error(error, 'COURSE');
       throw new BadRequestException('Erro ao criar curso.');
     }
   }
 
   @Put('/:id')
-  async updateCourse(@Body() data: CreateCourseDTO, @Param('id') id: number) {
+  async updateCourse(@Body() data: CreateCourseDTO, @Param('id') id: string) {
     try {
-      const updated = await this.coursesService.updateCourse(Number(id), data);
+      const updated = await this.coursesService.updateCourse(id, data);
       if (!updated) {
         throw new NotFoundException('Curso não encontrado para atualização.');
       }
       return updated;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao atualizar curso.');
+    }
+  }
+
+  @Delete('/:id')
+  async deleteCourse(@Param('id') id: string) {
+    try {
+      const deleted = await this.coursesService.deleteCourse(id);
+      if (!deleted) {
+        throw new NotFoundException('Curso não encontrado para exclusão.');
+      }
+      return deleted;
+    } catch (error) {
+      Logger.error(error, 'COURSE');
+      throw new InternalServerErrorException('Erro ao excluir curso.');
     }
   }
 }

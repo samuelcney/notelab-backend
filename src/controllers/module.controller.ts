@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateModuleDTO } from 'src/common/classes/schemas/create-module.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import { ChapterService } from 'src/services/chapter.service';
+import { ModuleService } from 'src/services/module.service';
 
 @UseGuards(AuthGuard)
 @Controller('modules')
 export class ChapterController {
-  constructor(private readonly chapterService: ChapterService) {}
+  constructor(private readonly chapterService: ModuleService) {}
 
   @Get()
   getAllModules() {
@@ -14,13 +14,13 @@ export class ChapterController {
   }
 
   @Get('/:id')
-  getModuleById(@Param('id') id: number) {
-    return this.chapterService.getModuleById(Number(id));
+  getModuleById(@Param('id') id: string) {
+    return this.chapterService.getModuleById(id);
   }
 
   @Get('/course/:id')
-  getModuleByCourseId(@Param('id') id: number) {
-    return this.chapterService.getModuleByCourseId(Number(id));
+  getModuleByCourseId(@Param('id') id: string) {
+    return this.chapterService.getModuleByCourseId(id);
   }
 
   @Post()

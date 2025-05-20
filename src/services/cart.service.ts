@@ -29,7 +29,7 @@ export class CartService {
     }
   }
 
-  async addProductToCart(cartId: number, courseId: number, totalValue: number) {
+  async addProductToCart(cartId: number, courseId: string, totalValue: number) {
     const course = await this.courseService.getCourseById(courseId);
 
     if (!course) {

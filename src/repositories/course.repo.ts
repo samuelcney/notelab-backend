@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCourseDTO } from 'src/common/classes/schemas/create-course.dto';
-import { PrismaService } from 'src/services/prisma.service';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class CoursesRepository {
@@ -34,7 +34,7 @@ export class CoursesRepository {
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.prisma.course.findUnique({
       where: { id },
       include: {
@@ -66,7 +66,6 @@ export class CoursesRepository {
   }
 
   async create(data: CreateCourseDTO) {
-    Logger.log('Creating course with data:', data);
     const newCourse = await this.prisma.course.create({
       data: {
         name: data.name,
@@ -110,7 +109,7 @@ export class CoursesRepository {
     return newCourse;
   }
 
-  async update(id: number, data: Partial<CreateCourseDTO>) {
+  async update(id: string, data: Partial<CreateCourseDTO>) {
     const updateData: any = {
       ...Object.fromEntries(
         Object.entries(data).filter(([_, value]) => value !== undefined),
@@ -163,5 +162,17 @@ export class CoursesRepository {
     });
 
     return courses;
+  }
+
+  async delete(id: string) {
+    await this.prisma.module.deleteMany({
+      where: { courseId: id },
+    });
+
+    const deletedCourse = await this.prisma.course.delete({
+      where: { id },
+    });
+
+    return deletedCourse;
   }
 }
