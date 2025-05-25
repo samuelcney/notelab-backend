@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { configDotenv } from 'dotenv';
@@ -104,6 +105,30 @@ export class AuthService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async requestRecoverPassword(email: string) {
+    const userExists = await this.usersService.getUserByEmail(email);
+
+    if (!userExists) {
+      throw new NotFoundException('O email inserido não está cadastrado');
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      userExists.email,
+      {},
+    );
+
+    if (error) {
+      throw new InternalServerErrorException(
+        'Erro ao enviar email de recuperação',
+      );
+    }
+
+    return {
+      status: 200,
+      message: 'Email de recuperação enviado com sucesso',
+    };
   }
 
   async logout() {

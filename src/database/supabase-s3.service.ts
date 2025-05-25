@@ -4,9 +4,33 @@ import { supabaseAdmin } from 'src/database/supabase';
 @Injectable()
 export class SupabaseStorageService {
   async uploadAvatar(userId: string, fileBuffer: Buffer, extension: string) {
-    const filePath = `avatar/${userId}/image.${extension}`;
+    const folderPath = `avatar/${userId}`;
+    const filePath = `${folderPath}/image.${extension}`;
 
-    const { error } = await supabaseAdmin.storage
+    const { data: listData, error: listError } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .list(folderPath);
+
+    if (listError) {
+      throw new Error(
+        `Erro ao listar arquivos anteriores: ${listError.message}`,
+      );
+    }
+
+    if (listData && listData.length > 0) {
+      const filesToDelete = listData.map(file => `${folderPath}/${file.name}`);
+      const { error: deleteError } = await supabaseAdmin.storage
+        .from('notelab-medias')
+        .remove(filesToDelete);
+
+      if (deleteError) {
+        throw new Error(
+          `Erro ao remover arquivos antigos: ${deleteError.message}`,
+        );
+      }
+    }
+
+    const { error: uploadError } = await supabaseAdmin.storage
       .from('notelab-medias')
       .upload(filePath, fileBuffer, {
         cacheControl: '3600',
@@ -14,7 +38,9 @@ export class SupabaseStorageService {
         contentType: this.getMimeType(extension),
       });
 
-    if (error) throw new Error(`Erro ao fazer upload: ${error.message}`);
+    if (uploadError) {
+      throw new Error(`Erro ao fazer upload: ${uploadError.message}`);
+    }
 
     const {
       data: { publicUrl },
@@ -29,8 +55,62 @@ export class SupabaseStorageService {
         jpg: 'image/jpeg',
         jpeg: 'image/jpeg',
         png: 'image/png',
-        webp: 'image/webp',
-      }[ext] || 'application/octet-stream'
+        mp4: 'video/mp4',
+        mov: 'video/quicktime',
+        webm: 'video/webm',
+      }[ext.toLowerCase()] || 'application/octet-stream'
     );
+  }
+
+  async uploadCourseCover(
+    courseId: string,
+    fileBuffer: Buffer,
+    extension: string,
+  ) {
+    const filePath = `courses/${courseId}/cover.${extension}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .upload(filePath, fileBuffer, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: this.getMimeType(extension),
+      });
+
+    if (uploadError)
+      throw new Error(`Erro ao enviar capa: ${uploadError.message}`);
+
+    const {
+      data: { publicUrl },
+    } = supabaseAdmin.storage.from('notelab-medias').getPublicUrl(filePath);
+
+    return publicUrl;
+  }
+
+  async uploadLessonVideo(
+    lessonId: string,
+    moduleId: string,
+    courseId: string,
+    fileBuffer: Buffer,
+    extension: string,
+  ) {
+    const filePath = `courses/${courseId}/modules/${moduleId}/lessons/${lessonId}.${extension}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .upload(filePath, fileBuffer, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: this.getMimeType(extension),
+      });
+
+    if (uploadError)
+      throw new Error(`Erro ao enviar vídeo: ${uploadError.message}`);
+
+    const {
+      data: { publicUrl },
+    } = supabaseAdmin.storage.from('notelab-medias').getPublicUrl(filePath);
+
+    return publicUrl;
   }
 }

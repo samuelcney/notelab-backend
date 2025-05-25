@@ -121,10 +121,24 @@ export class UsersRepository {
           },
         }),
       },
-      select: this.userSelect,
     });
 
-    return user;
+    const updatedUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        ...this.userSelect,
+        userBio: {
+          select: {
+            bio: true,
+            avatarUrl: true,
+            phone: true,
+          },
+        },
+        updatedAt: true,
+      },
+    });
+
+    return updatedUser;
   }
 
   async updateUserRole(userId: string, newRole: Role) {

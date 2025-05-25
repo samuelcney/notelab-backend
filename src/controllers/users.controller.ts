@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
-  Patch,
   Put,
   Query,
   Req,
@@ -68,14 +68,21 @@ export class UsersController {
     return this.usersService.updateUser(data);
   }
 
-  @Patch('/update-profile/:userId')
+  @Put('/update-profile/:userId')
   @UseInterceptors(FileInterceptor('avatar'))
   updateProfile(
     @Body() data: Partial<UpdateUserDTO>,
     @Param('userId') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.updateUserProfile(userId, data, file);
+    try {
+      return this.usersService.updateUserProfile(userId, data, file);
+    } catch (error: any) {
+      Logger.error(
+        `Error updating profile for user ${userId}: ${error.message}`,
+      );
+      throw new Error(`Error updating profile: ${error.message}`);
+    }
   }
 
   @Put('/update-role')

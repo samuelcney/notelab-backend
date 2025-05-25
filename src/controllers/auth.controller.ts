@@ -13,6 +13,12 @@ export class AuthController {
     return this.authService.signIn(data);
   }
 
+  @Post('recover-password')
+  @UsePipes(ZodValidationPipe)
+  async recoverPassword(@Body() data: { email: string }) {
+    return this.authService.requestRecoverPassword(data.email);
+  }
+
   @Post('register')
   @UsePipes(ZodValidationPipe)
   createUser(@Body() data: CreateUserDTO) {
