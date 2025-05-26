@@ -7,7 +7,7 @@ export class CoursesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.course.findMany({
+    const courses = await this.prisma.course.findMany({
       include: {
         instructor: {
           select: {
@@ -26,37 +26,26 @@ export class CoursesRepository {
           },
         },
         categories: {
-          include: {
-            category: true,
-          },
           select: {
-            category: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
+            category: true,
           },
         },
       },
     });
+
+    return courses.map(course => ({
+      ...course,
+      categories: course.categories.map(cat => cat.category) || [],
+    }));
   }
 
   async findById(id: string) {
-    return await this.prisma.course.findUnique({
+    const course = await this.prisma.course.findUnique({
       where: { id },
       include: {
         categories: {
-          include: {
-            category: true,
-          },
           select: {
-            category: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
+            category: true,
           },
         },
         instructor: {
@@ -79,6 +68,11 @@ export class CoursesRepository {
         },
       },
     });
+
+    return {
+      ...course,
+      categories: course?.categories.map(cat => cat.category) || [],
+    };
   }
 
   async create(data: CreateCourseDTO) {
@@ -175,9 +169,35 @@ export class CoursesRepository {
   async findByInstructorId(instructorId: string) {
     const courses = await this.prisma.course.findMany({
       where: { instructorId },
+      include: {
+        instructor: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+        modules: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            lessons: true,
+          },
+        },
+        categories: {
+          select: {
+            category: true,
+          },
+        },
+      },
     });
 
-    return courses;
+    return courses.map(course => ({
+      ...course,
+      categories: course.categories.map(cat => cat.category) || [],
+    }));
   }
 
   async delete(id: string) {
