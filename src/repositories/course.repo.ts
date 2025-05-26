@@ -29,6 +29,14 @@ export class CoursesRepository {
           include: {
             category: true,
           },
+          select: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
@@ -41,6 +49,14 @@ export class CoursesRepository {
         categories: {
           include: {
             category: true,
+          },
+          select: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         instructor: {
