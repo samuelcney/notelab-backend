@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { supabaseAdmin } from 'src/database/supabase';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class SupabaseStorageService {
   async uploadAvatar(userId: string, fileBuffer: Buffer, extension: string) {
     const folderPath = `avatar/${userId}`;
-    const filePath = `${folderPath}/image.${extension}`;
+    const uniqueFileName = `${uuidv4()}.${extension}`;
+    const filePath = `${folderPath}/${uniqueFileName}`;
 
     const { data: listData, error: listError } = await supabaseAdmin.storage
       .from('notelab-medias')
@@ -34,7 +36,7 @@ export class SupabaseStorageService {
       .from('notelab-medias')
       .upload(filePath, fileBuffer, {
         cacheControl: '3600',
-        upsert: true,
+        upsert: false,
         contentType: this.getMimeType(extension),
       });
 
