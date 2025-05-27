@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { EnrollmentService } from '../services/enrollment.service';
@@ -24,7 +32,11 @@ export class EnrollmentController {
   }
 
   @Post()
-  doTheCourseEnrollment(@Body() data: EnrollmentDTO) {
-    return this.enrollmentService.doTheCourseEnrollment(data);
+  registerCourseEnrollment(@Body() data: EnrollmentDTO) {
+    try {
+      return this.enrollmentService.registerCourseEnrollment(data);
+    } catch (error: any) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

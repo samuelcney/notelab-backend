@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CartRepository } from 'src/repositories/cart.repo';
 import { CoursesService } from './course.service';
 
@@ -17,19 +21,11 @@ export class CartService {
         `O carrinho com o ID ${userId} nao foi encontrado`,
       );
     }
+
+    return cart;
   }
 
-  async getCartTotalByUserId(id: number) {
-    const cart = await this.cartRepository.getTotalCartValue(id);
-
-    if (!cart) {
-      throw new NotFoundException(
-        `O carrinho com o ID ${id} nao foi encontrado`,
-      );
-    }
-  }
-
-  async addProductToCart(cartId: number, courseId: string, totalValue: number) {
+  async addProductToCart(cartId: string, courseId: string, userId: string) {
     const course = await this.courseService.getCourseById(courseId);
 
     if (!course) {
@@ -38,25 +34,25 @@ export class CartService {
       );
     }
 
-    return await this.cartRepository.addItemToCart(
-      cartId,
-      courseId,
-      totalValue,
+    const courseExistsInCart =
+      await this.cartRepository.getCartByUserId(userId);
+
+    const alreadyInCart = courseExistsInCart?.cartItems.some(
+      item => item.course.id === courseId,
     );
-  }
 
-  async removeProductFromCart(courseId: number) {
-    const courseToRemove =
-      await this.cartRepository.removeItemFromCart(courseId);
-
-    if (!courseToRemove) {
-      throw new NotFoundException(
-        `O curso com o ID ${courseId} não foi encontrado`,
-      );
+    if (alreadyInCart) {
+      throw new BadRequestException(`Este curso já está no carrinho`);
     }
+
+    return await this.cartRepository.addItemToCart(cartId, courseId);
   }
 
-  async clearCart(cartId: number) {
+  async removeProductFromCart(cartId: string, courseId: string) {
+    return await this.cartRepository.removeItemFromCart(cartId, courseId);
+  }
+
+  async clearCart(cartId: string) {
     return await this.cartRepository.clearCart(cartId);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { CoursesService } from 'src/services/course.service';
 import { UsersService } from 'src/services/users.service';
@@ -32,9 +32,17 @@ export class EnrollmentService {
     return this.enrollmentRepository.findAllByUserId(userId);
   }
 
-  async doTheCourseEnrollment(data: EnrollmentDTO) {
-    await this.usersService.getUserById(data.userId);
-    await this.courseService.getCourseById(data.courseId);
+  async registerCourseEnrollment(data: EnrollmentDTO) {
+    const existsUser = await this.usersService.getUserById(data.userId);
+    const existsCourse = this.courseService.getCourseById(data.courseId);
+
+    if (!existsUser) {
+      throw new NotFoundException(`O usuário com ID ${data.userId} não existe`);
+    }
+
+    if (!existsCourse) {
+      throw new NotFoundException(`O curso com ID ${data.courseId} não existe`);
+    }
 
     return await this.enrollmentRepository.doEnrollment(data);
   }

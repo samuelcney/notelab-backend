@@ -126,7 +126,7 @@ model Lesson {
 }
 
 model Cart {
-  id        Int        @id @default(autoincrement())
+  id        String   @id @default(uuid())
   userId    String
   cartItems CartItem[]
   user      User       @relation(fields: [userId], references: [id])
@@ -136,9 +136,8 @@ model Cart {
 
 model CartItem {
   id         Int      @id @default(autoincrement())
-  cartId     Int
+  cartId     String
   courseId   String
-  totalValue Float
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
   cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)

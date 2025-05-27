@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -19,27 +20,26 @@ export class CartController {
     return this.cartService.getCartByUserId(id);
   }
 
-  @Get('/:id/total')
-  getCartTotalByUserId(@Param('id') id: number) {
-    return this.cartService.getCartTotalByUserId(Number(id));
-  }
-
-  @Post('/:cartId/add/:courseId/:totalValue')
+  @Post('/:cartId/add/:courseId')
   addProductToCart(
-    @Param('cartId') cartId: number,
+    @Param('cartId') cartId: string,
     @Param('courseId') courseId: string,
-    @Param('totalValue') totalValue: number,
+    @Req() req,
   ) {
-    return this.cartService.addProductToCart(cartId, courseId, totalValue);
+    const userId = req.user.id;
+    return this.cartService.addProductToCart(cartId, courseId, userId);
   }
 
-  @Delete('/:courseId/remove')
-  removeProductFromCart(@Param('courseId') courseId: number) {
-    return this.cartService.removeProductFromCart(courseId);
+  @Delete('/:cartId/remove/:courseId')
+  removeProductFromCart(
+    @Param('cartId') cartId: string,
+    @Param('courseId') courseId: string,
+  ) {
+    return this.cartService.removeProductFromCart(cartId, courseId);
   }
 
   @Delete('/:cartId/clear')
-  clearCart(@Param('cartId') cartId: number) {
+  clearCart(@Param('cartId') cartId: string) {
     return this.cartService.clearCart(cartId);
   }
 }
