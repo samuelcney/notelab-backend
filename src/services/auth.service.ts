@@ -114,17 +114,6 @@ export class AuthService {
       throw new NotFoundException('O email inserido não está cadastrado');
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      userExists.email,
-      {},
-    );
-
-    if (error) {
-      throw new InternalServerErrorException(
-        'Erro ao enviar email de recuperação',
-      );
-    }
-
     return {
       status: 200,
       message: 'Email de recuperação enviado com sucesso',
