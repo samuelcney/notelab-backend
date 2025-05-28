@@ -12,7 +12,7 @@ import { supabaseAdmin } from 'src/database/supabase';
 import { UsersRepository } from 'src/repositories/users.repo';
 import { formatDate } from 'src/utils/dateFormatter';
 import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
-import { SupabaseStorageService } from '../database/supabase-s3.service';
+import { SupabaseStorageService } from './supabase-s3.service';
 
 @Injectable()
 export class UsersService {
