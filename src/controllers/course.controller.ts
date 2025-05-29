@@ -10,16 +10,23 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { SupabaseStorageService } from 'src/services/supabase-s3.service';
 import { CreateCourseDTO } from '../common/classes/schemas/create-course.dto';
 import { CoursesService } from '../services/course.service';
 
 @UseGuards(AuthGuard)
 @Controller('/courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly bucket: SupabaseStorageService,
+  ) {}
 
   @Get()
   async getAllCourses() {
@@ -60,11 +67,36 @@ export class CoursesController {
   @Post()
   async addCourse(@Body() data: CreateCourseDTO) {
     try {
-      Logger.log(data, 'COURSE');
-      return await this.coursesService.addCourse(data);
+      const course = await this.coursesService.addCourse(data);
+      return course;
     } catch (error) {
-      Logger.error(error, 'COURSE');
       throw new BadRequestException('Erro ao criar curso.');
+    }
+  }
+
+  @Post('/:id/cover')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadCover(
+    @Param('id') courseId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      if (!file) {
+        throw new BadRequestException('Arquivo não enviado.');
+      }
+
+      const extension = file.originalname.split('.').pop();
+      const coverUrl = await this.bucket.uploadCourseCover(
+        courseId,
+        file.buffer,
+        extension!,
+      );
+
+      await this.coursesService.uploadCourseImage(courseId, coverUrl);
+
+      return { coverUrl };
+    } catch (error) {
+      throw new BadRequestException('Erro ao fazer upload da capa.');
     }
   }
 

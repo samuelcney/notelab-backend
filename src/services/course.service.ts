@@ -37,6 +37,18 @@ export class CoursesService {
     return await this.coursesRepository.create(data);
   }
 
+  async uploadCourseImage(courseId: string, url: string) {
+    const existCourse = await this.coursesRepository.findById(courseId);
+
+    if (!existCourse) {
+      throw new NotFoundException(
+        `O curso com o ID ${courseId} não foi encontrado`,
+      );
+    }
+
+    return await this.coursesRepository.uploadImage(courseId, url);
+  }
+
   async updateCourse(id: string, data: Partial<CreateCourseDTO>) {
     const existCourse = await this.coursesRepository.findById(id);
 
