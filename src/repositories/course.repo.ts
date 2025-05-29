@@ -83,7 +83,6 @@ export class CoursesRepository {
         price: data.price,
         difficulty: data.difficulty,
         instructorId: data.instructorId,
-        coverImage: data.coverImage,
         issueCertificate: data.issueCertificate,
 
         categories: {
@@ -117,6 +116,13 @@ export class CoursesRepository {
     });
 
     return newCourse;
+  }
+
+  async uploadImage(courseId: string, url: string) {
+    await this.prisma.course.update({
+      where: { id: courseId },
+      data: { coverImage: url },
+    });
   }
 
   async update(id: string, data: Partial<CreateCourseDTO>) {
