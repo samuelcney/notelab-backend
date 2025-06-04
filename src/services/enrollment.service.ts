@@ -34,16 +34,35 @@ export class EnrollmentService {
 
   async registerCourseEnrollment(data: EnrollmentDTO) {
     const existsUser = await this.usersService.getUserById(data.userId);
-    const existsCourse = this.courseService.getCourseById(data.courseId);
 
     if (!existsUser) {
       throw new NotFoundException(`O usuário com ID ${data.userId} não existe`);
     }
 
-    if (!existsCourse) {
-      throw new NotFoundException(`O curso com ID ${data.courseId} não existe`);
+    if (Array.isArray(data.courseId)) {
+      for (const courseId of data.courseId) {
+        const existsCourse = await this.courseService.getCourseById(courseId);
+        if (!existsCourse) {
+          throw new NotFoundException(`O curso com ID ${courseId} não existe`);
+        }
+        await this.enrollmentRepository.doEnrollment({
+          courseId,
+          userId: data.userId,
+        });
+      }
+    } else {
+      const existsCourse = await this.courseService.getCourseById(
+        data.courseId,
+      );
+      if (!existsCourse) {
+        throw new NotFoundException(
+          `O curso com ID ${data.courseId} não existe`,
+        );
+      }
+      await this.enrollmentRepository.doEnrollment({
+        userId: data.userId,
+        courseId: data.courseId,
+      });
     }
-
-    return await this.enrollmentRepository.doEnrollment(data);
   }
 }

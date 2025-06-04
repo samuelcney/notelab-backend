@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -63,34 +62,21 @@ export class EnrollmentRepository {
             },
           },
         },
-        user: {
-          select: this.userSelect,
-        },
       },
     });
   }
 
   async findAllByUserId(userId: string) {
-    return await this.prisma.enrollment.findMany({
+    const enrrolment = await this.prisma.enrollment.findMany({
       where: {
         userId,
       },
-      include: {
-        course: {
-          include: {
-            instructor: {
-              select: this.userSelect,
-            },
-          },
-        },
-        user: {
-          select: this.userSelect,
-        },
-      },
     });
+
+    return enrrolment;
   }
 
-  async doEnrollment(data: EnrollmentDTO) {
+  async doEnrollment(data: { courseId: string; userId: string }) {
     return await this.prisma.enrollment.create({
       data: {
         courseId: data.courseId,
