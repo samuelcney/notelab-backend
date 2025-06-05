@@ -46,10 +46,26 @@ export class ApproveRequestRepository {
   }
 
   async createRequest(data: CreateApproveRequestDTO) {
+    const { userId, ...request } = data;
+
     return await this.prisma.approveInstructorRequest.create({
       data: {
-        userId: data.userId,
-        certificate: data.certificate,
+        userId: userId,
+        request: {
+          toJSON() {
+            return {
+              fullName: request.fullName,
+              email: request.email,
+              cpf: request.cpf,
+              phone: request.phone,
+              musicalEducation: request.musicalEducation,
+              yearsExperience: request.yearsExperience,
+              teachesInstruments: request.instruments,
+              personalBio: request.biography,
+              documents: request.documents,
+            };
+          },
+        },
       },
     });
   }

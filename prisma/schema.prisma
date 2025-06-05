@@ -43,8 +43,8 @@ model ApproveInstructorRequest {
   status      RequestStatus @default(PENDING)
   createdAt   DateTime      @default(now()) @map("created_at")
   approvedAt  DateTime?     @map("approved_at")
-  certificate String
   rejectedAt  DateTime?     @map("rejected_at")
+  request     Json?         @map("request_data")
   user        User          @relation(fields: [userId], references: [id])
 
   @@map("approve_request")
@@ -126,7 +126,7 @@ model Lesson {
 }
 
 model Cart {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   userId    String
   cartItems CartItem[]
   user      User       @relation(fields: [userId], references: [id])
@@ -135,26 +135,26 @@ model Cart {
 }
 
 model CartItem {
-  id         Int      @id @default(autoincrement())
-  cartId     String
-  courseId   String
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  cartId    String
+  courseId  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("cart_items")
 }
 
 model PasswordRequest {
-  id        Int      @id @default(autoincrement())
-  email    String
-  token     String
-  isUsed   Boolean  @default(false) @map("is_used")
-  isVerified Boolean @default(false) @map("is_verified")
-  createdAt DateTime @default(now()) @map("created_at")
-  expiresAt DateTime @map("expires_at")
- 
+  id         Int      @id @default(autoincrement())
+  email      String
+  token      String
+  isUsed     Boolean  @default(false) @map("is_used")
+  isVerified Boolean  @default(false) @map("is_verified")
+  createdAt  DateTime @default(now()) @map("created_at")
+  expiresAt  DateTime @map("expires_at")
+
   @@map("password_request")
 }
 

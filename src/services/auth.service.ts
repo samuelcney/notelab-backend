@@ -2,10 +2,10 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { configDotenv } from 'dotenv';
+import { ChangePasswordDTO } from 'src/common/classes/dtos/change-password.dto';
 import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
 import { LoginDTO } from 'src/common/classes/schemas/login.dto';
 import { supabase, supabaseAdmin } from 'src/database/supabase';
@@ -107,17 +107,32 @@ export class AuthService {
     }
   }
 
-  async requestRecoverPassword(email: string) {
-    const userExists = await this.usersService.getUserByEmail(email);
+  async changePassword(data: ChangePasswordDTO) {
+    const currentSession = await supabase.auth.getSession();
+    const email = currentSession.data.session?.user.email;
 
-    if (!userExists) {
-      throw new NotFoundException('O email inserido não está cadastrado');
+    if (!email) {
+      throw new Error('Usuário não autenticado.');
     }
 
-    return {
-      status: 200,
-      message: 'Email de recuperação enviado com sucesso',
-    };
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email,
+      password: data.currentPassword,
+    });
+
+    if (loginError) {
+      throw new Error('Senha atual incorreta.');
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: data.newPassword,
+    });
+
+    if (updateError) {
+      throw new Error('Erro ao atualizar a senha: ' + updateError.message);
+    }
+
+    return { success: true };
   }
 
   async logout() {

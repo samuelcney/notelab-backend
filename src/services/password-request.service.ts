@@ -19,6 +19,4 @@ export class PasswordRequestService {
   async generateToken(length: number): Promise<string> {
     return randomBytes(length).toString('hex');
   }
-
-  async validateRequest(token) {}
 }

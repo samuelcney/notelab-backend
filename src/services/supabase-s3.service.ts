@@ -64,6 +64,32 @@ export class SupabaseStorageService {
     );
   }
 
+  async uploadRequestDocument(
+    userId: string,
+    fileBuffer: Buffer,
+    extension: string,
+  ) {
+    const filePath = `request-documents/${userId}/docs.${extension}`;
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .upload(filePath, fileBuffer, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: this.getMimeType(extension),
+      });
+
+    if (uploadError) {
+      throw new Error(`Erro ao enviar documento: ${uploadError.message}`);
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabaseAdmin.storage.from('notelab-medias').getPublicUrl(filePath);
+
+    return publicUrl;
+  }
+
   async uploadCourseCover(
     courseId: string,
     fileBuffer: Buffer,
