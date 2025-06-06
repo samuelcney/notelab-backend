@@ -1,9 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { supabaseAdmin } from 'src/database/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class SupabaseStorageService {
+  async getFileUrl(folder: string): Promise<string> {
+    const { data } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .getPublicUrl(folder);
+
+    return data.publicUrl;
+  }
+
+  async getFilesUrl(folder: string): Promise<string[]> {
+    const { data, error } = await supabaseAdmin.storage
+      .from('notelab-medias')
+      .list(folder, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      });
+
+    if (error) {
+      throw new NotFoundException('Erro ao listar arquivos: ' + error.message);
+    }
+
+    if (!data || data.length === 0) {
+      throw new NotFoundException(
+        'Nenhum arquivo encontrado na pasta: ' + folder,
+      );
+    }
+
+    const urls = data.map(
+      file =>
+        supabaseAdmin.storage
+          .from('notelab-medias')
+          .getPublicUrl(`${folder}/${file.name}`).data.publicUrl,
+    );
+
+    return urls;
+  }
+
   async uploadAvatar(userId: string, fileBuffer: Buffer, extension: string) {
     const folderPath = `avatar/${userId}`;
     const uniqueFileName = `${uuidv4()}.${extension}`;

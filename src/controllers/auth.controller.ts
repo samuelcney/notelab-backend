@@ -28,7 +28,6 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Post('change-password')
-  @UsePipes(ZodValidationPipe)
   async changePassword(@Body() data: ChangePasswordDTO) {
     return this.authService.changePassword(data);
   }

@@ -1,30 +1,18 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { resend } from 'src/config/resend-config';
 import { renderEmailTemplate } from 'src/utils/emailTemplate';
-import { PasswordRequestService } from './password-request.service';
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly passwordService: PasswordRequestService) {}
+  constructor() {}
 
-  async sendPasswordRecoveryEmail(email: string): Promise<void> {
-    const token = await this.passwordService.generateToken(3);
-
-    try {
-      await this.passwordService.create(email, token);
-    } catch (error: any) {
-      throw new BadGatewayException(
-        'Erro ao criar solicitação de recuperação de senha',
-        error,
-      );
-    }
-
+  async sendPasswordRecoveryEmail(email: string, token: string): Promise<void> {
     const { error } = await resend.emails.send({
       from: 'Notelab <noreply@resend.dev>',
       to: email,
       subject: 'Recuperação de senha - Notelab',
       html: renderEmailTemplate('reset-password', {
-        token: String(token),
+        token,
       }),
     });
 

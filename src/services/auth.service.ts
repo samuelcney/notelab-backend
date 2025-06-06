@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -28,7 +29,7 @@ export class AuthService {
     }
 
     return {
-      status: 200,
+      status: HttpStatus.OK,
       message: 'Login realizado com sucesso',
       token: authData.session.access_token,
     };
@@ -98,7 +99,7 @@ export class AuthService {
       }
 
       return {
-        status: 201,
+        status: HttpStatus.CREATED,
         message: 'Usuário criado com sucesso',
         user,
       };
@@ -108,21 +109,24 @@ export class AuthService {
   }
 
   async changePassword(data: ChangePasswordDTO) {
-    const currentSession = await supabase.auth.getSession();
-    const email = currentSession.data.session?.user.email;
+    const session = await supabase.auth.getSession();
+    const email = session.data.session?.user.email;
 
     if (!email) {
       throw new Error('Usuário não autenticado.');
     }
 
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email,
-      password: data.currentPassword,
-    });
+    const { error: signInError, data: login } =
+      await supabase.auth.signInWithPassword({
+        email: email,
+        password: data.currentPassword,
+      });
 
-    if (loginError) {
-      throw new Error('Senha atual incorreta.');
+    if (signInError) {
+      throw new UnauthorizedException('Senha atual incorreta');
     }
+
+    const { data: user, error: userError } = await supabase.auth.getUser();
 
     const { error: updateError } = await supabase.auth.updateUser({
       password: data.newPassword,
@@ -132,7 +136,13 @@ export class AuthService {
       throw new Error('Erro ao atualizar a senha: ' + updateError.message);
     }
 
-    return { success: true };
+    return {
+      session: {
+        access_token: login.session.access_token,
+        user,
+      },
+      message: 'Senha alterada com sucesso!',
+    };
   }
 
   async logout() {

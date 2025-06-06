@@ -6,9 +6,9 @@ import {
   CategoryModule,
   ChapterModule,
   CoursesModule,
-  EmailModule,
   EnrollmentModule,
   LessonModule,
+  PasswordRequestModule,
   PrismaModule,
   UsersModule,
 } from './index';
@@ -25,7 +25,7 @@ import {
     EnrollmentModule,
     ApproveRequestModule,
     CartModule,
-    EmailModule,
+    PasswordRequestModule,
   ],
 })
 export class AppModule {}
