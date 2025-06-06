@@ -3,8 +3,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -44,5 +46,35 @@ export class ApproveRequestController {
         error.message || 'Erro ao criar solicitação de aprovação.',
       );
     }
+  }
+
+  @Post('/approve/:id')
+  approveRequest(
+    @Param('id') requestId: number,
+    @Body() data: { userId: string; comment?: string; status: boolean },
+    @Req() req,
+  ) {
+    const user = req.user;
+
+    if (user.app_metadata?.role !== 'admin') {
+      throw new UnauthorizedException(
+        'Apenas administradores podem aprovar solicitações.',
+      );
+    }
+
+    if (!requestId) {
+      throw new BadRequestException('ID da solicitação é obrigatório.');
+    }
+
+    if (!requestId) {
+      throw new BadRequestException('ID da solicitação é obrigatório.');
+    }
+
+    return this.requestService.approveRequest(
+      requestId,
+      data.userId,
+      data.status,
+      data.comment,
+    );
   }
 }

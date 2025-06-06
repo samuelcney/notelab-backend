@@ -25,13 +25,10 @@ export class PasswordRequestService {
 
   async recoverPasswordRequest(email: string) {
     try {
-      Logger.log(email);
       const token = await generateRandomToken(3);
 
-      const req = await this.emailService.sendPasswordRecoveryEmail(
-        email,
-        token,
-      );
+      Logger.log(`Enviando solicitação de recuperação de senha para: ${email}`);
+      await this.emailService.sendPasswordRecoveryEmail(email, token);
 
       await this.passwordRepository.create(email, token);
 

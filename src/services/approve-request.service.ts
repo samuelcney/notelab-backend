@@ -38,4 +38,22 @@ export class ApproveRequestService {
 
     return await this.requestRepository.createRequest(data);
   }
+
+  async approveRequest(
+    requestId: number,
+    userId: string,
+    status: boolean,
+    comment?: string,
+  ) {
+    const request = await this.requestRepository.findById(requestId);
+    if (!request) {
+      throw new ConflictException('Solicitação não encontrada.');
+    }
+
+    return await this.requestRepository.approveRequest(
+      requestId,
+      userId,
+      status,
+    );
+  }
 }

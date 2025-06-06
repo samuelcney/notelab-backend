@@ -4,9 +4,10 @@ import { PasswordRequestRepository } from 'src/repositories/password-request.rep
 import { EmailService } from 'src/services/email.service';
 import { PasswordRequestService } from 'src/services/password-request.service';
 import { PrismaModule } from './prisma.module';
+import { UsersModule } from './users.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UsersModule],
   controllers: [PasswordRequestController],
   providers: [PasswordRequestRepository, PasswordRequestService, EmailService],
   exports: [],
