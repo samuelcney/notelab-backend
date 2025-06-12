@@ -143,6 +143,18 @@ export class UsersService {
     return { message: 'Role atualizada com sucesso' };
   }
 
+  async updateUserStatus(userId: string, status: boolean) {
+    const userExist = await this.usersRepository.findById(userId);
+
+    if (!userExist) {
+      throw new NotFoundException(
+        `O usuário com o ID ${userId} não foi encontrado`,
+      );
+    }
+
+    return this.usersRepository.updateUserStatus(userId, status);
+  }
+
   async deleteUser(id: string) {
     const userExist = await this.usersRepository.findById(id);
 

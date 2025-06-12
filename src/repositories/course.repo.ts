@@ -8,6 +8,7 @@ export class CoursesRepository {
 
   async findAll() {
     const courses = await this.prisma.course.findMany({
+      orderBy: { createdAt: 'desc' },
       include: {
         instructor: {
           select: {

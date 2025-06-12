@@ -9,19 +9,18 @@ datasource db {
 }
 
 model User {
-  email             String                    @unique
-  name              String
-  createdAt         DateTime                  @default(now()) @map("created_at")
-  updatedAt         DateTime                  @updatedAt @map("updated_at")
-  role              Role                      @default(STUDENT)
-  id                String                    @id @default(uuid())
-  isActiveUser      Boolean                   @default(true)
-  isApprovedAccount Boolean                   @default(false)
-  approvedRequest   ApproveInstructorRequest?
-  cart              Cart[]
-  courses           Course[]
-  enrollments       Enrollment[]
-  userBio           UserBio?
+  email           String                    @unique
+  name            String
+  createdAt       DateTime                  @default(now()) @map("created_at")
+  updatedAt       DateTime                  @updatedAt @map("updated_at")
+  role            Role                      @default(STUDENT)
+  id              String                    @id @default(uuid())
+  isActive        Boolean                   @default(true)
+  approvedRequest ApproveInstructorRequest?
+  cart            Cart[]
+  courses         Course[]
+  enrollments     Enrollment[]
+  userBio         UserBio?
 
   @@map("users")
 }
@@ -38,14 +37,14 @@ model UserBio {
 }
 
 model ApproveInstructorRequest {
-  id          Int           @id @default(autoincrement())
-  userId      String        @unique
-  status      RequestStatus @default(PENDING)
-  createdAt   DateTime      @default(now()) @map("created_at")
-  approvedAt  DateTime?     @map("approved_at")
-  rejectedAt  DateTime?     @map("rejected_at")
-  request     Json?         @map("request_data")
-  user        User          @relation(fields: [userId], references: [id])
+  id         Int           @id @default(autoincrement())
+  userId     String        @unique
+  status     RequestStatus @default(PENDING)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  approvedAt DateTime?     @map("approved_at")
+  rejectedAt DateTime?     @map("rejected_at")
+  request    Json?         @map("request_data")
+  user       User          @relation(fields: [userId], references: [id])
 
   @@map("approve_request")
 }
@@ -56,7 +55,7 @@ model Enrollment {
   courseId  String
   createdAt DateTime @default(now()) @map("created_at")
   isActive  Boolean  @default(true)
-  course    Course   @relation(fields: [courseId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("enrollments")

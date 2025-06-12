@@ -19,6 +19,14 @@ export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async signIn(data: LoginDTO) {
+    const user = await this.usersService.getUserByEmail(data.email);
+
+    if (user.isActive === false) {
+      throw new UnauthorizedException(
+        'Sua conta está inativa. Entre em contato com o suporte.',
+      );
+    }
+
     const { data: authData, error } = await supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,

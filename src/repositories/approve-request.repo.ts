@@ -84,7 +84,6 @@ export class ApproveRequestRepository {
         where: { id: userId },
         data: {
           role: status ? 'INSTRUCTOR' : 'STUDENT',
-          isApprovedAccount: status,
         },
       }),
     ]);

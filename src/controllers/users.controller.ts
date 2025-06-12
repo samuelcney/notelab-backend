@@ -5,6 +5,7 @@ import {
   Get,
   Logger,
   Param,
+  Post,
   Put,
   Query,
   Req,
@@ -88,6 +89,17 @@ export class UsersController {
   @Put('/update-role')
   updateUserRole(@Body() data: { id: string; newRole: Role }) {
     return this.usersService.updateRole(data.id, data.newRole);
+  }
+
+  @Post('/update/status/:id')
+  updateUserStatus(
+    @Param('id') userId: string,
+    @Body() body: { status: boolean },
+  ) {
+    Logger.log(
+      `Updating status for user ${JSON.stringify(userId)} to ${JSON.stringify(body.status)}`,
+    );
+    return this.usersService.updateUserStatus(userId, body.status);
   }
 
   @Delete()

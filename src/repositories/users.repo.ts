@@ -15,13 +15,15 @@ export class UsersRepository {
     role: true,
     createdAt: true,
     updatedAt: true,
-    isActiveUser: true,
-    isApprovedAccount: true,
+    isActive: true,
   };
 
   async findAll() {
     return await this.prisma.user.findMany({
       select: this.userSelect,
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 
@@ -37,6 +39,7 @@ export class UsersRepository {
         role: true,
         createdAt: true,
         updatedAt: true,
+        isActive: true,
       },
     });
 
@@ -142,9 +145,16 @@ export class UsersRepository {
   }
 
   async updateUserRole(userId: string, newRole: Role) {
-    return this.prisma.user.update({
+    return await this.prisma.user.update({
       where: { id: userId },
       data: { role: newRole },
+    });
+  }
+
+  async updateUserStatus(userId: string, status: boolean) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: { isActive: status },
     });
   }
 

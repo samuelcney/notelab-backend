@@ -23,7 +23,11 @@ export class EnrollmentRepository {
           },
         },
         user: {
-          select: this.userSelect,
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
         },
       },
     });
@@ -49,20 +53,9 @@ export class EnrollmentRepository {
     });
   }
 
-  async findAllByCourseId(courseId: string) {
-    return await this.prisma.enrollment.findMany({
-      where: {
-        courseId,
-      },
-      include: {
-        course: {
-          include: {
-            instructor: {
-              select: this.userSelect,
-            },
-          },
-        },
-      },
+  async countEnrollment(courseIds: string[]) {
+    return await this.prisma.enrollment.count({
+      where: { courseId: { in: courseIds } },
     });
   }
 

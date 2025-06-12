@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { CoursesService } from 'src/services/course.service';
 import { UsersService } from 'src/services/users.service';
@@ -20,10 +20,19 @@ export class EnrollmentService {
     return await this.enrollmentRepository.findById(id);
   }
 
-  async getAllEnrollmentsByCourseId(courseId: string) {
-    await this.courseService.getCourseById(courseId);
+  async getEnrollmentCountByInstructorId(id: string) {
+    const courses = await this.courseService.getCourseByInstructorId(id);
 
-    return this.enrollmentRepository.findAllByCourseId(courseId);
+    const courseIds = courses.map(course => course.id);
+
+    const totalEnrollments =
+      await this.enrollmentRepository.countEnrollment(courseIds);
+    Logger.log(
+      `Total de matrículas para o instrutor ${id}: ${totalEnrollments}`,
+      'EnrollmentService',
+    );
+
+    return totalEnrollments;
   }
 
   async getAllEnrollmentsByUserId(userId: string) {
