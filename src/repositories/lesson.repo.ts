@@ -37,7 +37,7 @@ export class LessonsRepository {
       data: {
         title: data.title,
         videoUrl: data.videoUrl,
-        duration: data.duration,
+        description: data.description,
         moduleId: data.moduleId,
       },
       include: {

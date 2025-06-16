@@ -84,7 +84,6 @@ export class CoursesRepository {
         price: data.price,
         difficulty: data.difficulty,
         instructorId: data.instructorId,
-        issueCertificate: data.issueCertificate,
 
         categories: {
           create:
@@ -100,7 +99,7 @@ export class CoursesRepository {
               create: module.lessons.map(lesson => ({
                 title: lesson.title,
                 videoUrl: lesson.videoUrl,
-                duration: lesson.duration,
+                description: lesson.description,
               })),
             },
           })),
@@ -150,7 +149,7 @@ export class CoursesRepository {
             create: module.lessons.map(lesson => ({
               title: lesson.title,
               videoUrl: lesson.videoUrl,
-              duration: lesson.duration,
+              description: lesson.description,
             })),
           },
         })),

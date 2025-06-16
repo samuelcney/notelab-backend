@@ -20,7 +20,7 @@ const CreateCourseSchema = z.object({
             z.object({
               title: z.string().min(1),
               videoUrl: z.string().url(),
-              duration: z.number().min(1),
+              description: z.string().optional(),
             }),
           )
           .min(1),

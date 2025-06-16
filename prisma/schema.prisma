@@ -62,22 +62,21 @@ model Enrollment {
 }
 
 model Course {
-  id               String           @id @default(uuid())
-  name             String
-  description      String
-  price            Float            @default(0)
-  difficulty       Difficulty
-  instructorId     String
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
-  coverImage       String?
-  issueCertificate Boolean          @default(false)
-  isActiveCourse   Boolean          @default(true)
-  cartItem         CartItem[]
-  categories       CourseCategory[]
-  instructor       User             @relation(fields: [instructorId], references: [id])
-  enrollment       Enrollment[]
-  modules          Module[]
+  id             String           @id @default(uuid())
+  name           String
+  description    String
+  price          Float            @default(0)
+  difficulty     Difficulty
+  instructorId   String
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  coverImage     String?
+  isActiveCourse Boolean          @default(true)
+  cartItem       CartItem[]
+  categories     CourseCategory[]
+  instructor     User             @relation(fields: [instructorId], references: [id])
+  enrollment     Enrollment[]
+  modules        Module[]
 
   @@map("courses")
 }
@@ -112,14 +111,14 @@ model Module {
 }
 
 model Lesson {
-  id        String   @id @default(uuid())
-  title     String
-  moduleId  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  duration  Int
-  videoUrl  String?
-  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  id          String   @id @default(uuid())
+  title       String
+  moduleId    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  videoUrl    String?
+  description String?
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@map("lessons")
 }

@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
 import { CoursesService } from 'src/services/course.service';
 import { UsersService } from 'src/services/users.service';
@@ -27,11 +27,6 @@ export class EnrollmentService {
 
     const totalEnrollments =
       await this.enrollmentRepository.countEnrollment(courseIds);
-    Logger.log(
-      `Total de matrículas para o instrutor ${id}: ${totalEnrollments}`,
-      'EnrollmentService',
-    );
-
     return totalEnrollments;
   }
 

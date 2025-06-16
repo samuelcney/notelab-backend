@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import {
-  ApproveRequestModule,
   AuthModule,
   CartModule,
   CategoryModule,
@@ -23,7 +22,6 @@ import {
     ChapterModule,
     LessonModule,
     EnrollmentModule,
-    ApproveRequestModule,
     CartModule,
     PasswordRequestModule,
   ],

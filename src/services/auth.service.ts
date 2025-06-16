@@ -21,6 +21,10 @@ export class AuthService {
   async signIn(data: LoginDTO) {
     const user = await this.usersService.getUserByEmail(data.email);
 
+    if (!user) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
     if (user.isActive === false) {
       throw new UnauthorizedException(
         'Sua conta está inativa. Entre em contato com o suporte.',
@@ -54,7 +58,7 @@ export class AuthService {
             display_name: data.name,
           },
           app_metadata: {
-            role: 'STUDENT',
+            role: data.role || 'STUDENT',
           },
           email_confirm: true,
         });
@@ -83,13 +87,13 @@ export class AuthService {
       await supabaseAdmin.from('profiles').insert({
         id: userId,
         name: data.name,
-        role: 'STUDENT',
+        role: data.role || 'STUDENT',
       });
 
       const user = await this.usersService.createUser({
         ...data,
         id: userId,
-        role: 'STUDENT',
+        role: data.role || 'STUDENT',
       });
 
       const { error: claimsError } =

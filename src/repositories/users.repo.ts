@@ -81,6 +81,7 @@ export class UsersRepository {
         id: data.id,
         name: data.name,
         email: data.email,
+        role: data.role || Role.STUDENT,
         cart: { create: {} },
         userBio: { create: {} },
       },

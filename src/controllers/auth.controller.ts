@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Logger,
+  Post,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ChangePasswordDTO } from 'src/common/classes/dtos/change-password.dto';
 import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
@@ -18,6 +25,7 @@ export class AuthController {
   @Post('register')
   @UsePipes(ZodValidationPipe)
   createUser(@Body() data: CreateUserDTO) {
+    Logger.log('Creating user with data:', data);
     return this.authService.signUp(data);
   }
 
