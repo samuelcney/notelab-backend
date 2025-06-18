@@ -3,13 +3,13 @@ import { PasswordRequestController } from 'src/controllers/password-request.cont
 import { PasswordRequestRepository } from 'src/repositories/password-request.repo';
 import { EmailService } from 'src/services/email.service';
 import { PasswordRequestService } from 'src/services/password-request.service';
+import { EmailModule } from './email.module';
 import { PrismaModule } from './prisma.module';
 import { UsersModule } from './users.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule],
+  imports: [PrismaModule, UsersModule, EmailModule],
   controllers: [PasswordRequestController],
   providers: [PasswordRequestRepository, PasswordRequestService, EmailService],
-  exports: [],
 })
 export class PasswordRequestModule {}

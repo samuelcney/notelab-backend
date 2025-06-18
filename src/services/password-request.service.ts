@@ -2,6 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   HttpStatus,
+  Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,9 +10,11 @@ import { RecoverPasswordDTO } from 'src/common/classes/dtos/recover-password.dto
 import { supabaseAdmin } from 'src/database/supabase';
 import { PasswordRequestRepository } from 'src/repositories/password-request.repo';
 import { generateRandomToken } from 'src/utils/generateToken';
+
 import { EmailService } from './email.service';
 import { UsersService } from './users.service';
 
+@Injectable()
 export class PasswordRequestService {
   constructor(
     private readonly passwordRepository: PasswordRequestRepository,
@@ -20,31 +23,32 @@ export class PasswordRequestService {
   ) {}
 
   async findAll() {
-    return await this.passwordRepository.findAll();
+    return this.passwordRepository.findAll();
   }
 
   async recoverPasswordRequest(email: string) {
     try {
       const token = await generateRandomToken(3);
-
-      Logger.log(`Enviando solicitação de recuperação de senha para: ${email}`);
       await this.emailService.sendPasswordRecoveryEmail(email, token);
-
       await this.passwordRepository.create(email, token);
 
       return {
+        status: HttpStatus.OK,
         message: 'Solicitação de recuperação de senha enviada com sucesso.',
       };
     } catch (error) {
-      Logger.error(`Erro: ${error}`, error);
+      Logger.error('Erro ao solicitar recuperação de senha', error);
       throw new BadGatewayException(
         'Erro ao processar solicitação de recuperação de senha. Por favor, tente novamente mais tarde.',
       );
     }
   }
 
-  async validateToken(data: Omit<RecoverPasswordDTO, 'newPassword'>) {
-    const request = await this.passwordRepository.findByEmail(data.email);
+  async validateToken({
+    email,
+    token,
+  }: Omit<RecoverPasswordDTO, 'newPassword'>) {
+    const request = await this.passwordRepository.findByEmail(email);
 
     if (!request) {
       throw new NotFoundException(
@@ -52,44 +56,50 @@ export class PasswordRequestService {
       );
     }
 
-    if (request.token !== data.token) {
+    if (request.token !== token) {
+      throw new BadRequestException('Token inválido.');
+    }
+
+    if (request.isUsed) {
       throw new BadRequestException(
-        'Token inválido. Por favor, solicite uma nova recuperação de senha.',
+        'Token já utilizado. Solicite um novo token.',
       );
     }
 
-    if (request.expiresAt < new Date(Date.now())) {
+    if (request.expiresAt < new Date()) {
       throw new BadRequestException(
-        'Token expirado. Por favor, solicite uma nova recuperação de senha.',
+        'Token expirado. Solicite uma nova recuperação.',
       );
     }
 
-    return {
-      status: HttpStatus.OK,
-    };
+    await this.passwordRepository.updateRequest(request.id);
+
+    return { status: HttpStatus.OK, message: 'Token validado com sucesso.' };
   }
 
-  async resetPassword(data: Omit<RecoverPasswordDTO, 'token'>) {
-    const user = await this.usersService.getUserByEmail(data.email);
+  async resetPassword({
+    email,
+    newPassword,
+  }: Omit<RecoverPasswordDTO, 'token'>) {
+    const user = await this.usersService.getUserByEmail(email);
 
     if (!user) {
       throw new NotFoundException(
-        'Usuário não encontrado. Por favor, verifique o e-mail.',
+        'Usuário não encontrado. Verifique o e-mail informado.',
       );
     }
 
     const { error } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
-      password: data.newPassword,
+      password: newPassword,
     });
 
     if (error) {
+      Logger.error('Erro ao atualizar senha no Supabase', error);
       throw new BadGatewayException(
-        'Erro ao atualizar a senha. Por favor, tente novamente mais tarde.',
+        'Erro ao atualizar a senha. Tente novamente.',
       );
     }
 
-    return {
-      message: 'Senha atualizada com sucesso.',
-    };
+    return { status: HttpStatus.OK, message: 'Senha atualizada com sucesso.' };
   }
 }

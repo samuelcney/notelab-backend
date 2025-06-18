@@ -4,6 +4,7 @@ export { CartModule } from './cart.module';
 export { CategoryModule } from './categories.module';
 export { ChapterModule } from './chapter.module';
 export { CoursesModule } from './course.module';
+export { EmailModule } from './email.module';
 export { EnrollmentModule } from './enrollment.module';
 export { LessonModule } from './lesson.module';
 export { PasswordRequestModule } from './password-request.module';

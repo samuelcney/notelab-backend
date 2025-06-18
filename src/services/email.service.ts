@@ -6,7 +6,7 @@ import { renderEmailTemplate } from 'src/utils/emailTemplate';
 export class EmailService {
   constructor() {}
 
-  async sendPasswordRecoveryEmail(email: string, token: string): Promise<void> {
+  async sendPasswordRecoveryEmail(email: string, token: string) {
     const { error } = await resend.emails.send({
       from: 'Notelab <noreply@resend.dev>',
       to: email,

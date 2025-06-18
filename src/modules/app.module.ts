@@ -5,6 +5,7 @@ import {
   CategoryModule,
   ChapterModule,
   CoursesModule,
+  EmailModule,
   EnrollmentModule,
   LessonModule,
   PasswordRequestModule,
@@ -24,6 +25,7 @@ import {
     EnrollmentModule,
     CartModule,
     PasswordRequestModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

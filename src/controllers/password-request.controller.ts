@@ -9,8 +9,8 @@ export class PasswordRequestController {
   ) {}
 
   @Post('/email')
-  sendRecoveryEmail(@Body() email: string) {
-    return this.passwordRequestService.recoverPasswordRequest(email);
+  sendRecoveryEmail(@Body() body: { email: string }) {
+    return this.passwordRequestService.recoverPasswordRequest(body.email);
   }
 
   @Post('/validate-token')

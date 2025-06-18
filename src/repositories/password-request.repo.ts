@@ -14,6 +14,9 @@ export class PasswordRequestRepository {
       where: {
         email,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -22,9 +25,19 @@ export class PasswordRequestRepository {
       data: {
         email,
         token,
-        expiresAt: new Date(Date.now() + 600),
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       },
     });
     return request;
+  }
+
+  async updateRequest(requestId: number) {
+    return await this.prisma.passwordRequest.update({
+      where: { id: requestId },
+      data: {
+        isUsed: true,
+        isVerified: true,
+      },
+    });
   }
 }
