@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { CreateLessonDTO } from 'src/common/classes/schemas/create-lesson.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { LessonsService } from 'src/services/lesson.service';
+import { CreateLessonDTO } from '@/common/classes/schemas/create-lesson.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { LessonsService } from '@/services/lesson.service';
 
 @UseGuards(AuthGuard)
 @Controller('lessons')

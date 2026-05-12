@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 
 import { Role } from '@prisma/client';
-import { UpdateUserDTO } from 'src/common/classes/schemas/update-profile-info.dto';
-import { supabaseAdmin } from 'src/database/supabase';
-import { UsersRepository } from 'src/repositories/users.repo';
-import { formatDate } from 'src/utils/dateFormatter';
+import { UpdateUserDTO } from '@/common/classes/schemas/update-profile-info.dto';
+import { supabaseAdmin } from '@/db/supabase';
+import { UsersRepository } from '@/repositories/users.repo';
+import { formatDate } from '@/utils/dateFormatter';
 import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
 import { SupabaseStorageService } from './supabase-s3.service';
 

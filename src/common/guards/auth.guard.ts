@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { supabase } from 'src/database/supabase';
+import { supabase } from '@/db/supabase';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

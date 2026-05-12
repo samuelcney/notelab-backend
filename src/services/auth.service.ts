@@ -6,11 +6,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { configDotenv } from 'dotenv';
-import { ChangePasswordDTO } from 'src/common/classes/dtos/change-password.dto';
-import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
-import { LoginDTO } from 'src/common/classes/schemas/login.dto';
-import { supabase, supabaseAdmin } from 'src/database/supabase';
-import { UsersService } from 'src/services/users.service';
+import { ChangePasswordDTO } from '@/common/classes/dtos/change-password.dto';
+import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
+import { LoginDTO } from '@/common/classes/schemas/login.dto';
+import { supabase, supabaseAdmin } from '@/db/supabase';
+import { UsersService } from '@/services/users.service';
 
 configDotenv();
 

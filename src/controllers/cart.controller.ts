@@ -7,8 +7,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { CartService } from 'src/services/cart.service';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { CartService } from '@/services/cart.service';
 
 @UseGuards(AuthGuard)
 @Controller('cart')

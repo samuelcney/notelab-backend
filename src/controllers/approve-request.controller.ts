@@ -12,8 +12,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateApproveRequestDTO } from 'src/common/classes/dtos/create-approve-request.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { CreateApproveRequestDTO } from '@/common/classes/dtos/create-approve-request.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
 import { ApproveRequestService } from '../services/approve-request.service';
 
 @UseGuards(AuthGuard)

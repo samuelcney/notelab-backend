@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { resend } from 'src/config/resend-config';
-import { renderEmailTemplate } from 'src/utils/emailTemplate';
+import { resend } from '@/config/resend-config';
+import { renderEmailTemplate } from '@/utils/emailTemplate';
 
 @Injectable()
 export class EmailService {

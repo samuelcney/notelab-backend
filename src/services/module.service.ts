@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CoursesService } from 'src/services/course.service';
+import { CoursesService } from '@/services/course.service';
 import { CreateModuleDTO } from '../common/classes/schemas/create-module.dto';
 import { ChapterRepository as ModuleRepository } from '../repositories/module.repo';
 

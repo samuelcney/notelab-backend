@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { CreateModuleDTO } from 'src/common/classes/schemas/create-module.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { ModuleService } from 'src/services/module.service';
+import { CreateModuleDTO } from '@/common/classes/schemas/create-module.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { ModuleService } from '@/services/module.service';
 
 @UseGuards(AuthGuard)
 @Controller('modules')

@@ -15,8 +15,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { SupabaseStorageService } from 'src/services/supabase-s3.service';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { SupabaseStorageService } from '@/services/supabase-s3.service';
 import { CreateCourseDTO } from '../common/classes/schemas/create-course.dto';
 import { CoursesService } from '../services/course.service';
 

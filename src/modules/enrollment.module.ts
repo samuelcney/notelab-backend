@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CoursesModule } from 'src/modules/course.module';
-import { UsersModule } from 'src/modules/users.module';
+import { CoursesModule } from '@/modules/course.module';
+import { UsersModule } from '@/modules/users.module';
 import { EnrollmentController } from '../controllers/enrollment.controller';
 import { EnrollmentRepository } from '../repositories/enrollment.repo';
 import { EnrollmentService } from '../services/enrollment.service';

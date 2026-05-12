@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateApproveRequestDTO } from 'src/common/classes/dtos/create-approve-request.dto';
+import { CreateApproveRequestDTO } from '@/common/classes/dtos/create-approve-request.dto';
 import { ApproveRequestRepository } from '../repositories/approve-request.repo';
 import { SupabaseStorageService } from './supabase-s3.service';
 

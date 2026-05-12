@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { LessonsRepository } from 'src/repositories/lesson.repo';
-import { ModuleService } from 'src/services/module.service';
+import { LessonsRepository } from '@/repositories/lesson.repo';
+import { ModuleService } from '@/services/module.service';
 import { CreateLessonDTO } from '../common/classes/schemas/create-lesson.dto';
 
 @Injectable()

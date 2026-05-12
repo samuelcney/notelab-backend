@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { ZodValidationPipe } from 'nestjs-zod';
-import { ChangePasswordDTO } from 'src/common/classes/dtos/change-password.dto';
-import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
-import { LoginDTO } from 'src/common/classes/schemas/login.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { AuthService } from 'src/services/auth.service';
+import { ChangePasswordDTO } from '@/common/classes/dtos/change-password.dto';
+import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
+import { LoginDTO } from '@/common/classes/schemas/login.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { AuthService } from '@/services/auth.service';
 
 @Controller('auth')
 export class AuthController {

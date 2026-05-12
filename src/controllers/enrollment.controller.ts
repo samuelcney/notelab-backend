@@ -7,8 +7,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { EnrollmentDTO } from '@/common/classes/dtos/add-enrollment.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
 import { EnrollmentService } from '../services/enrollment.service';
 
 @UseGuards(AuthGuard)

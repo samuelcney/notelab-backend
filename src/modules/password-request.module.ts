@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PasswordRequestController } from 'src/controllers/password-request.controller';
-import { PasswordRequestRepository } from 'src/repositories/password-request.repo';
-import { EmailService } from 'src/services/email.service';
-import { PasswordRequestService } from 'src/services/password-request.service';
+import { PasswordRequestController } from '@/controllers/password-request.controller';
+import { PasswordRequestRepository } from '@/repositories/password-request.repo';
+import { EmailService } from '@/services/email.service';
+import { PasswordRequestService } from '@/services/password-request.service';
 import { EmailModule } from './email.module';
 import { PrismaModule } from './prisma.module';
 import { UsersModule } from './users.module';

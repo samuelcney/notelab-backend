@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EnrollmentDTO } from 'src/common/classes/dtos/add-enrollment.dto';
-import { CoursesService } from 'src/services/course.service';
-import { UsersService } from 'src/services/users.service';
+import { EnrollmentDTO } from '@/common/classes/dtos/add-enrollment.dto';
+import { CoursesService } from '@/services/course.service';
+import { UsersService } from '@/services/users.service';
 import { EnrollmentRepository } from '../repositories/enrollment.repo';
 
 @Injectable()

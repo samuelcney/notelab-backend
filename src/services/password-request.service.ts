@@ -6,10 +6,10 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RecoverPasswordDTO } from 'src/common/classes/dtos/recover-password.dto';
-import { supabaseAdmin } from 'src/database/supabase';
-import { PasswordRequestRepository } from 'src/repositories/password-request.repo';
-import { generateRandomToken } from 'src/utils/generateToken';
+import { RecoverPasswordDTO } from '@/common/classes/dtos/recover-password.dto';
+import { supabaseAdmin } from '@/db/supabase';
+import { PasswordRequestRepository } from '@/repositories/password-request.repo';
+import { generateRandomToken } from '@/utils/generateToken';
 
 import { EmailService } from './email.service';
 import { UsersService } from './users.service';

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { supabaseAdmin } from 'src/database/supabase';
+import { supabaseAdmin } from '@/db/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

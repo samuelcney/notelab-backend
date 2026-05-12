@@ -18,10 +18,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from '@prisma/client';
 
 import { ZodValidationPipe } from 'nestjs-zod';
-import { CreateUserDTO } from 'src/common/classes/schemas/create-user.dto';
-import { UpdateUserDTO } from 'src/common/classes/schemas/update-profile-info.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { UsersService } from 'src/services/users.service';
+import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
+import { UpdateUserDTO } from '@/common/classes/schemas/update-profile-info.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { UsersService } from '@/services/users.service';
 
 @Controller('users')
 @UseGuards(AuthGuard)

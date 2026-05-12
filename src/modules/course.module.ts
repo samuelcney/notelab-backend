@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CoursesRepository } from 'src/repositories/course.repo';
-import { SupabaseStorageService } from 'src/services/supabase-s3.service';
+import { CoursesRepository } from '@/repositories/course.repo';
+import { SupabaseStorageService } from '@/services/supabase-s3.service';
 import { CoursesController } from '../controllers/course.controller';
 import { CoursesService } from '../services/course.service';
 import { PrismaModule } from './prisma.module';

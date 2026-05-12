@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CoursesRepository } from 'src/repositories/course.repo';
+import { CoursesRepository } from '@/repositories/course.repo';
 import { CreateCourseDTO } from '../common/classes/schemas/create-course.dto';
 
 @Injectable()

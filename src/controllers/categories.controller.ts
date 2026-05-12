@@ -8,8 +8,8 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CategoryDTO } from 'src/common/classes/dtos/create-category.dto';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { CategoryDTO } from '@/common/classes/dtos/create-category.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
 import { CategoryService } from '../services/categories.service';
 
 @UseGuards(AuthGuard)
