@@ -17,6 +17,7 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "strict": true,
+    "types": ["node", "multer"],
     "paths": {
       "@/*": ["./src/*"]
     }

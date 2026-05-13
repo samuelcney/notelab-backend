@@ -16,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Role } from '@prisma/client';
+import { Request } from 'express';
 
 import { ZodValidationPipe } from 'nestjs-zod';
 import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
@@ -34,14 +35,14 @@ export class UsersController {
   }
 
   @Get('/info/me')
-  async getMe(@Req() req): Promise<any> {
-    const supabaseUser = req.user;
-    const dbUser = await this.usersService.getUserById(supabaseUser.id);
+  async getMe(@Req() req: Request): Promise<any> {
+    const authUser = req.user;
+    const dbUser = await this.usersService.getUserById(authUser.id);
 
     return {
-      id: supabaseUser.id,
-      email: supabaseUser.email,
-      role: supabaseUser.app_metadata?.role,
+      id: authUser.id,
+      email: authUser.email,
+      role: authUser.role,
       name: dbUser?.name,
       createdAt: dbUser?.createdAt,
       updatedAt: dbUser?.updatedAt,
@@ -102,7 +103,7 @@ export class UsersController {
     return this.usersService.updateUserStatus(userId, body.status);
   }
 
-  @Delete()
+  @Delete('/:id')
   deleteUser(@Param('id') id: string) {
     return this.usersService.deleteUser(id);
   }

@@ -7,6 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { CartService } from '@/services/cart.service';
 
@@ -24,7 +25,7 @@ export class CartController {
   addProductToCart(
     @Param('cartId') cartId: string,
     @Param('courseId') courseId: string,
-    @Req() req,
+    @Req() req: Request,
   ) {
     const userId = req.user.id;
     return this.cartService.addProductToCart(cartId, courseId, userId);

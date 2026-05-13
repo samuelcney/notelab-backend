@@ -1,4 +1,12 @@
-import { Body, Controller, Post, UseGuards, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ChangePasswordDTO } from '@/common/classes/dtos/change-password.dto';
 import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
@@ -23,12 +31,12 @@ export class AuthController {
 
   @Post('logout')
   async logout() {
-    await this.authService.logout();
+    return await this.authService.logout();
   }
 
   @UseGuards(AuthGuard)
   @Post('change-password')
-  async changePassword(@Body() data: ChangePasswordDTO) {
-    return this.authService.changePassword(data);
+  async changePassword(@Req() req: Request, @Body() data: ChangePasswordDTO) {
+    return this.authService.changePassword(req.user.id, data);
   }
 }

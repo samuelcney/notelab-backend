@@ -2,16 +2,26 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { supabase } from '@/db/supabase';
+import { PrismaService } from '@/db/prisma.service';
+
+type AuthTokenPayload = {
+  sub: string;
+  email: string;
+  role: string;
+};
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -27,17 +37,35 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Token ausente');
     }
 
-    const { data, error } = await supabase.auth.getUser(token);
+    if (!process.env.JWT_SECRET) {
+      throw new UnauthorizedException('JWT_SECRET não configurado');
+    }
 
-    if (error || !data?.user) {
-      Logger.error('Usuário não autenticado', error);
+    let payload: AuthTokenPayload;
+    try {
+      payload = await this.jwtService.verifyAsync<AuthTokenPayload>(token, {
+        secret: process.env.JWT_SECRET,
+      });
+    } catch {
       throw new UnauthorizedException('Token inválido ou expirado');
     }
 
-    request['user'] = data.user;
-    request['lang'] = request.headers['accept-language'] ?? 'pt';
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        isActive: true,
+      },
+    });
 
-    Logger.log(`Request sent by user ${data.user.id}`, 'AUTH GUARD');
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Token inválido ou expirado');
+    }
+
+    request.user = user;
+    request['lang'] = request.headers['accept-language'] ?? 'pt';
     return true;
   }
 

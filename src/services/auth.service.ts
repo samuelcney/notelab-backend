@@ -1,25 +1,43 @@
 import {
+  ConflictException,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { configDotenv } from 'dotenv';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { ChangePasswordDTO } from '@/common/classes/dtos/change-password.dto';
 import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
 import { LoginDTO } from '@/common/classes/schemas/login.dto';
-import { supabase, supabaseAdmin } from '@/db/supabase';
 import { UsersService } from '@/services/users.service';
-
-configDotenv();
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  private async createAccessToken(payload: {
+    sub: string;
+    email: string;
+    role: string;
+  }) {
+    if (!process.env.JWT_SECRET) {
+      throw new InternalServerErrorException(
+        'Configuração JWT_SECRET ausente',
+      );
+    }
+
+    return await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '7d',
+    });
+  }
 
   async signIn(data: LoginDTO) {
-    const user = await this.usersService.getUserByEmail(data.email);
+    const user = await this.usersService.getAuthUserByEmail(data.email);
 
     if (!user) {
       throw new UnauthorizedException('Credenciais inválidas');
@@ -31,133 +49,79 @@ export class AuthService {
       );
     }
 
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (error) {
+    if (!user.password) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
+
+    const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
+    const token = await this.createAccessToken({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     return {
       status: HttpStatus.OK,
       message: 'Login realizado com sucesso',
-      token: authData.session.access_token,
+      token,
     };
   }
 
   async signUp(data: CreateUserDTO) {
-    try {
-      const { data: userData, error: authError } =
-        await supabaseAdmin.auth.admin.createUser({
-          email: data.email,
-          password: data.password,
-          user_metadata: {
-            name: data.name,
-            display_name: data.name,
-          },
-          app_metadata: {
-            role: data.role || 'STUDENT',
-          },
-          email_confirm: true,
-        });
+    const existingUser = await this.usersService.getAuthUserByEmail(data.email);
 
-      if (authError) {
-        Logger.error(authError, 'AuthError');
-        if (
-          authError.message ===
-          'A user with this email address has already been registered'
-        ) {
-          throw new InternalServerErrorException(
-            'O email inserido já está cadastrado',
-          );
-        }
-        throw new InternalServerErrorException(authError);
-      }
-
-      const userId = userData?.user?.id;
-
-      if (!userId) {
-        throw new InternalServerErrorException(
-          'Erro ao obter ID do usuário criado',
-        );
-      }
-
-      await supabaseAdmin.from('profiles').insert({
-        id: userId,
-        name: data.name,
-        role: data.role || 'STUDENT',
-      });
-
-      const user = await this.usersService.createUser({
-        ...data,
-        id: userId,
-        role: data.role || 'STUDENT',
-      });
-
-      const { error: claimsError } =
-        await supabaseAdmin.auth.admin.updateUserById(userId, {
-          app_metadata: {
-            role: user.role,
-          },
-        });
-
-      if (claimsError) {
-        Logger.error('Erro ao atualizar custom claims:', claimsError);
-        throw new InternalServerErrorException(
-          'Erro ao definir a role do usuário',
-        );
-      }
-
-      return {
-        status: HttpStatus.CREATED,
-        message: 'Usuário criado com sucesso',
-        user,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+    if (existingUser) {
+      throw new ConflictException('O email inserido já está cadastrado');
     }
+
+    const password = await bcrypt.hash(data.password, 10);
+
+    const user = await this.usersService.createUser({
+      ...data,
+      password,
+      role: data.role || 'STUDENT',
+    });
+
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Usuário criado com sucesso',
+      user,
+    };
   }
 
-  async changePassword(data: ChangePasswordDTO) {
-    const session = await supabase.auth.getSession();
-    const email = session.data.session?.user.email;
+  async changePassword(userId: string, data: ChangePasswordDTO) {
+    const user = await this.usersService.getAuthUserById(userId);
 
-    if (!email) {
-      throw new Error('Usuário não autenticado.');
+    if (!user || !user.password) {
+      throw new UnauthorizedException('Usuário não autenticado.');
     }
 
-    const { error: signInError, data: login } =
-      await supabase.auth.signInWithPassword({
-        email: email,
-        password: data.currentPassword,
-      });
+    const isPasswordValid = await bcrypt.compare(
+      data.currentPassword,
+      user.password,
+    );
 
-    if (signInError) {
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Senha atual incorreta');
     }
 
-    const { data: user, error: userError } = await supabase.auth.getUser();
-
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: data.newPassword,
-    });
-
-    if (updateError) {
-      throw new Error('Erro ao atualizar a senha: ' + updateError.message);
-    }
+    const newPasswordHash = await bcrypt.hash(data.newPassword, 10);
+    await this.usersService.updatePasswordById(userId, newPasswordHash);
 
     return {
-      session: {
-        access_token: login.session.access_token,
-        user,
-      },
       message: 'Senha alterada com sucesso!',
     };
   }
 
   async logout() {
-    await supabase.auth.signOut();
+    return {
+      status: HttpStatus.OK,
+      message: 'Logout realizado com sucesso',
+    };
   }
 }

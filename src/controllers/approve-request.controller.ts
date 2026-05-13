@@ -12,6 +12,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Role } from '@prisma/client';
+import { Request } from 'express';
 import { CreateApproveRequestDTO } from '@/common/classes/dtos/create-approve-request.dto';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { ApproveRequestService } from '../services/approve-request.service';
@@ -30,7 +32,7 @@ export class ApproveRequestController {
   @UseInterceptors(FileInterceptor('documents'))
   createApproveRequest(
     @Body() dto: CreateApproveRequestDTO,
-    @Req() req,
+    @Req() req: Request,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
@@ -50,28 +52,26 @@ export class ApproveRequestController {
 
   @Post('/approve/:id')
   approveRequest(
-    @Param('id') requestId: number,
+    @Param('id') requestId: string,
     @Body() data: { userId: string; comment?: string; status: boolean },
-    @Req() req,
+    @Req() req: Request,
   ) {
     const user = req.user;
 
-    if (user.app_metadata?.role !== 'admin') {
+    if (user.role !== Role.ADMIN) {
       throw new UnauthorizedException(
         'Apenas administradores podem aprovar solicitações.',
       );
     }
 
-    if (!requestId) {
-      throw new BadRequestException('ID da solicitação é obrigatório.');
-    }
+    const parsedRequestId = Number(requestId);
 
-    if (!requestId) {
+    if (!parsedRequestId || Number.isNaN(parsedRequestId)) {
       throw new BadRequestException('ID da solicitação é obrigatório.');
     }
 
     return this.requestService.approveRequest(
-      requestId,
+      parsedRequestId,
       data.userId,
       data.status,
       data.comment,

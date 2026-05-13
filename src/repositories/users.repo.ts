@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { CreateUserDTO } from '@/common/classes/schemas/create-user.dto';
 import { UpdateUserDTO } from '@/common/classes/schemas/update-profile-info.dto';
 import { PrismaService } from '../db/prisma.service';
@@ -8,7 +8,7 @@ import { PrismaService } from '../db/prisma.service';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  private userSelect = {
+  private readonly userSelect: Prisma.UserSelect = {
     id: true,
     email: true,
     name: true,
@@ -29,23 +29,40 @@ export class UsersRepository {
 
   async findByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-        isActive: true,
-      },
+      where: { email },
+      select: this.userSelect,
     });
 
     if (!user) return null;
 
     return user;
+  }
+
+  async findAuthByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+        role: true,
+        isActive: true,
+      },
+    });
+  }
+
+  async findAuthById(id: string) {
+    return await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        role: true,
+        isActive: true,
+      },
+    });
   }
 
   async findById(id: string) {
@@ -81,6 +98,7 @@ export class UsersRepository {
         id: data.id,
         name: data.name,
         email: data.email,
+        password: data.password,
         role: data.role || Role.STUDENT,
         cart: { create: {} },
         userBio: { create: {} },
@@ -107,12 +125,12 @@ export class UsersRepository {
   async updateProfileInfo(userId: string, data: Partial<UpdateUserDTO>) {
     const { name, bio, avatarUrl, phone } = data;
 
-    const bioData: any = {};
+    const bioData: { bio?: string; avatarUrl?: string; phone?: string } = {};
     if (bio !== undefined) bioData.bio = bio;
     if (avatarUrl !== undefined) bioData.avatarUrl = avatarUrl;
     if (phone !== undefined) bioData.phone = phone;
 
-    const user = await this.prisma.user.update({
+    await this.prisma.user.update({
       where: { id: userId },
       data: {
         ...(name !== undefined && { name }),
@@ -164,6 +182,13 @@ export class UsersRepository {
       where: {
         id,
       },
+    });
+  }
+
+  async updatePassword(id: string, password: string) {
+    return await this.prisma.user.update({
+      where: { id },
+      data: { password },
     });
   }
 }

@@ -6,8 +6,8 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { RecoverPasswordDTO } from '@/common/classes/dtos/recover-password.dto';
-import { supabaseAdmin } from '@/db/supabase';
 import { PasswordRequestRepository } from '@/repositories/password-request.repo';
 import { generateRandomToken } from '@/utils/generateToken';
 
@@ -81,7 +81,7 @@ export class PasswordRequestService {
     email,
     newPassword,
   }: Omit<RecoverPasswordDTO, 'token'>) {
-    const user = await this.usersService.getUserByEmail(email);
+    const user = await this.usersService.getAuthUserByEmail(email);
 
     if (!user) {
       throw new NotFoundException(
@@ -89,16 +89,9 @@ export class PasswordRequestService {
       );
     }
 
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
-      password: newPassword,
-    });
+    const passwordHash = await bcrypt.hash(newPassword, 10);
 
-    if (error) {
-      Logger.error('Erro ao atualizar senha no Supabase', error);
-      throw new BadGatewayException(
-        'Erro ao atualizar a senha. Tente novamente.',
-      );
-    }
+    await this.usersService.updatePasswordById(user.id, passwordHash);
 
     return { status: HttpStatus.OK, message: 'Senha atualizada com sucesso.' };
   }

@@ -1,14 +1,11 @@
 import {
   ConflictException,
   Injectable,
-  InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 
 import { Role } from '@prisma/client';
 import { UpdateUserDTO } from '@/common/classes/schemas/update-profile-info.dto';
-import { supabaseAdmin } from '@/db/supabase';
 import { UsersRepository } from '@/repositories/users.repo';
 import { formatDate } from '@/utils/dateFormatter';
 import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
@@ -64,25 +61,26 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserDTO) {
-    try {
-      const existingUser = await this.usersRepository.findByEmail(data.email);
-      if (existingUser) {
-        throw new ConflictException('O e-mail inserido já está cadastrado');
-      }
-
-      const user = await this.usersRepository.create({ ...data, id: data.id });
-
-      return {
-        ...user,
-        createdAt: formatDate(user.createdAt),
-        updatedAt: formatDate(user.updatedAt),
-      };
-    } catch (error) {
-      Logger.error('Erro ao criar usuário:', error);
-      throw new InternalServerErrorException(
-        'Erro inesperado ao criar usuário',
-      );
+    const existingUser = await this.usersRepository.findByEmail(data.email);
+    if (existingUser) {
+      throw new ConflictException('O e-mail inserido já está cadastrado');
     }
+
+    const user = await this.usersRepository.create({ ...data, id: data.id });
+
+    return {
+      ...user,
+      createdAt: formatDate(user.createdAt),
+      updatedAt: formatDate(user.updatedAt),
+    };
+  }
+
+  async getAuthUserByEmail(email: string) {
+    return await this.usersRepository.findAuthByEmail(email);
+  }
+
+  async getAuthUserById(id: string) {
+    return await this.usersRepository.findAuthById(id);
   }
 
   async updateUser(data: Partial<CreateUserDTO>) {
@@ -124,23 +122,25 @@ export class UsersService {
   }
 
   async updateRole(userId: string, newRole: Role) {
-    const { error: claimsError } =
-      await supabaseAdmin.auth.admin.updateUserById(userId, {
-        app_metadata: {
-          role: newRole,
-        },
-      });
-
-    if (claimsError) {
-      Logger.error('Erro ao atualizar role no Supabase:', claimsError);
-      throw new InternalServerErrorException(
-        'Erro ao atualizar role no Supabase',
-      );
-    }
-
     await this.usersRepository.updateUserRole(userId, newRole);
 
     return { message: 'Role atualizada com sucesso' };
+  }
+
+  async updatePasswordById(userId: string, password: string) {
+    return await this.usersRepository.updatePassword(userId, password);
+  }
+
+  async updatePasswordByEmail(email: string, password: string) {
+    const user = await this.usersRepository.findAuthByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(
+        `O usuário com o email ${email} não foi encontrado`,
+      );
+    }
+
+    return await this.usersRepository.updatePassword(user.id, password);
   }
 
   async updateUserStatus(userId: string, status: boolean) {
