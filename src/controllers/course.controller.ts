@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@/common/guards/auth.guard';
-import { SupabaseStorageService } from '@/services/supabase-s3.service';
+import { StorageService } from '@/services/storage.service';
 import { CreateCourseDTO } from '../common/classes/schemas/create-course.dto';
 import { CoursesService } from '../services/course.service';
 
@@ -25,14 +25,14 @@ import { CoursesService } from '../services/course.service';
 export class CoursesController {
   constructor(
     private readonly coursesService: CoursesService,
-    private readonly bucket: SupabaseStorageService,
+    private readonly storage: StorageService,
   ) {}
 
   @Get()
   async getAllCourses() {
     try {
       return await this.coursesService.getAllCourses();
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Erro ao buscar cursos.');
     }
   }
@@ -57,7 +57,7 @@ export class CoursesController {
       const courses =
         await this.coursesService.getCourseByInstructorId(instructorId);
       return courses;
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException(
         'Erro ao buscar cursos do instrutor.',
       );
@@ -69,7 +69,7 @@ export class CoursesController {
     try {
       const course = await this.coursesService.addCourse(data);
       return course;
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Erro ao criar curso.');
     }
   }
@@ -86,7 +86,7 @@ export class CoursesController {
       }
 
       const extension = file.originalname.split('.').pop();
-      const coverUrl = await this.bucket.uploadCourseCover(
+      const coverUrl = await this.storage.uploadCourseCover(
         courseId,
         file.buffer,
         extension!,
@@ -95,7 +95,7 @@ export class CoursesController {
       await this.coursesService.uploadCourseImage(courseId, coverUrl);
 
       return { coverUrl };
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Erro ao fazer upload da capa.');
     }
   }
@@ -108,7 +108,7 @@ export class CoursesController {
         throw new NotFoundException('Curso não encontrado para atualização.');
       }
       return updated;
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Erro ao atualizar curso.');
     }
   }

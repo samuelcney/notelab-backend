@@ -2,7 +2,7 @@ export default {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
-  roots: ['<rootDir>/src', '<rootDir>/test'],
+  roots: ['<rootDir>/src'],
   testMatch: ['**/*.spec.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   transform: {

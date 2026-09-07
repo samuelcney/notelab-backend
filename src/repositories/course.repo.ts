@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateCourseDTO } from '@/common/classes/schemas/create-course.dto';
 import { PrismaService } from '@/db/prisma.service';
 
@@ -126,10 +127,10 @@ export class CoursesRepository {
   }
 
   async update(id: string, data: Partial<CreateCourseDTO>) {
-    const updateData: any = {
-      ...Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined),
-      ),
+    const updateData: Prisma.CourseUpdateInput = {
+      ...(Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== undefined),
+      ) as Prisma.CourseUpdateInput),
       categories: data.categories
         ? {
             deleteMany: {},

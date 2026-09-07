@@ -4,6 +4,10 @@
 /build
 /data
 
+# locally-stored uploads (keep the folder, ignore its contents)
+/uploads/*
+!/uploads/.gitkeep
+
 # Logs
 logs
 *.log
@@ -58,4 +62,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Prisma
 prisma/.env
-prisma/migrations/
+# NOTE: prisma/migrations/ MUST be committed — it is the schema history.

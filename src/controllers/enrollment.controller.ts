@@ -35,8 +35,10 @@ export class EnrollmentController {
   registerCourseEnrollment(@Body() data: EnrollmentDTO) {
     try {
       return this.enrollmentService.registerCourseEnrollment(data);
-    } catch (error: any) {
-      throw new BadRequestException(error.message);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Erro ao registrar matrícula.';
+      throw new BadRequestException(message);
     }
   }
 }

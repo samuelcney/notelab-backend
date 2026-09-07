@@ -35,7 +35,7 @@ export class UsersController {
   }
 
   @Get('/info/me')
-  async getMe(@Req() req: Request): Promise<any> {
+  async getMe(@Req() req: Request) {
     const authUser = req.user;
     const dbUser = await this.usersService.getUserById(authUser.id);
 
@@ -79,11 +79,10 @@ export class UsersController {
   ) {
     try {
       return this.usersService.updateUserProfile(userId, data, file);
-    } catch (error: any) {
-      Logger.error(
-        `Error updating profile for user ${userId}: ${error.message}`,
-      );
-      throw new Error(`Error updating profile: ${error.message}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      Logger.error(`Error updating profile for user ${userId}: ${message}`);
+      throw new Error(`Error updating profile: ${message}`);
     }
   }
 

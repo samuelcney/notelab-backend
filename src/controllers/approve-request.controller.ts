@@ -43,10 +43,12 @@ export class ApproveRequestController {
       }
 
       return this.requestService.createApproveRequest(dto, file);
-    } catch (error: any) {
-      throw new BadRequestException(
-        error.message || 'Erro ao criar solicitação de aprovação.',
-      );
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao criar solicitação de aprovação.';
+      throw new BadRequestException(message);
     }
   }
 

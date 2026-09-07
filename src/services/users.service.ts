@@ -9,13 +9,13 @@ import { UpdateUserDTO } from '@/common/classes/schemas/update-profile-info.dto'
 import { UsersRepository } from '@/repositories/users.repo';
 import { formatDate } from '@/utils/dateFormatter';
 import { CreateUserDTO } from '../common/classes/schemas/create-user.dto';
-import { SupabaseStorageService } from './supabase-s3.service';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly supabaseStorage: SupabaseStorageService,
+    private readonly storage: StorageService,
   ) {}
 
   async getAllUsers() {
@@ -110,7 +110,7 @@ export class UsersService {
 
     if (file) {
       const ext = file.originalname.split('.').pop();
-      const avatarUrl = await this.supabaseStorage.uploadAvatar(
+      const avatarUrl = await this.storage.uploadAvatar(
         userId,
         file.buffer,
         ext!,

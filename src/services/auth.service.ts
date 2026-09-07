@@ -25,9 +25,7 @@ export class AuthService {
     role: string;
   }) {
     if (!process.env.JWT_SECRET) {
-      throw new InternalServerErrorException(
-        'Configuração JWT_SECRET ausente',
-      );
+      throw new InternalServerErrorException('Configuração JWT_SECRET ausente');
     }
 
     return await this.jwtService.signAsync(payload, {

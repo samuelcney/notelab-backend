@@ -1,13 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateApproveRequestDTO } from '@/common/classes/dtos/create-approve-request.dto';
 import { ApproveRequestRepository } from '../repositories/approve-request.repo';
-import { SupabaseStorageService } from './supabase-s3.service';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class ApproveRequestService {
   constructor(
     private readonly requestRepository: ApproveRequestRepository,
-    private readonly bucket: SupabaseStorageService,
+    private readonly storage: StorageService,
   ) {}
 
   async getAllRequests() {
@@ -28,7 +28,7 @@ export class ApproveRequestService {
 
     if (file) {
       const ext = file.originalname.split('.').pop();
-      const url = await this.bucket.uploadRequestDocument(
+      const url = await this.storage.uploadRequestDocument(
         data.userId,
         file.buffer,
         ext!,
@@ -43,7 +43,7 @@ export class ApproveRequestService {
     requestId: number,
     userId: string,
     status: boolean,
-    comment?: string,
+    _comment?: string,
   ) {
     const request = await this.requestRepository.findById(requestId);
     if (!request) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { resend } from '@/config/resend-config';
+import { getResend } from '@/config/resend-config';
 import { renderEmailTemplate } from '@/utils/emailTemplate';
 
 @Injectable()
@@ -7,7 +7,7 @@ export class EmailService {
   constructor() {}
 
   async sendPasswordRecoveryEmail(email: string, token: string) {
-    const { error } = await resend.emails.send({
+    const { error } = await getResend().emails.send({
       from: 'Notelab <noreply@resend.dev>',
       to: email,
       subject: 'Recuperação de senha - Notelab',
